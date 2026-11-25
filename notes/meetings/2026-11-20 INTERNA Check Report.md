@@ -6,10 +6,11 @@ owner: Elena Spini
 with: Aurel Mrruku, Anita Aga
 org: ROMI
 raised: 2026-11-20
-updated: 2026-11-20
+updated: 2026-11-25
 depends_on: []
 blocks: []
 source: Drive 1r82xuJWwSqyj69tDhrFzx3MUGezgY8hnn_52m-Y4Nn4
+also_source: Gmail thread 1a1f824f6302f5cc - Gemini notes mailed 2026-11-20 09:48Z, auto-generated 09:47 CET
 ---
 
 # 2026-11-20 - INTERNA Check Report
@@ -162,3 +163,24 @@ luck"_. What happened is
 | [OI-381](../items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md) | 🆕 opened — unmerged branch, holiday release, no explanation to users, unscheduled tranche report |
 | [OI-383](../items/OI-383%20The%20landing%20page%20domain%20must%20be%20re-raised%20with%20the%20marketing%20team.md) | 🆕 opened — the landing-page domain |
 | [OI-370](../items/OI-370%20The%20client%20cannot%20run%20the%20Mexal%20syncs%20by%20hand.md) | the Mexal sync panel's icon was removed in the same branch, `a25d4b3` |
+
+## 🟡 2026-11-25 - a second, independent record of this meeting exists
+
+Found in Gmail once the connector was restored: the **Gemini notes** for
+`[PIENISSIMO] - Interna Check Report`, mailed 20 November 09:48Z, content
+auto-generated 09:47 CET (thread `1a1f824f6302f5cc`). They corroborate what this
+note already held, from a source that does not depend on the Drive document:
+
+- Sections: _Presentazione dashboard e report_ · _Schedulazione e insoluti_
+  (_"Verifica dei report per le tranche e le fatture insolute"_) ·
+  _Pianificazione del rilascio_ (_"**Approvazione del deployment delle dashboard
+  per lunedi**"_).
+- 🔑 Its **single** recommended next step, verbatim: _"[Aurel mrruku] Eseguire il
+  deployment delle dashboard e dei report: in produzione lunedi se richiesto
+  dagli stakeholder, **senza pero fornire spiegazioni agli utenti**."_
+
+⚠ Nothing new in substance — recorded because it independently attests the
+unexplained-release instruction that
+[OI-381](../items/OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md)
+and [OI-377](../items/OI-377%20Reports%20and%20dashboards%20were%20never%20built%20and%20have%20no%20requirements.md)
+turn on, and because the Drive document is not the only copy.

@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Anita Aga, Davide Losco
 org: ROMI
 raised: 2026-11-24
-updated: 2026-11-24
+updated: 2026-11-25
 depends_on: [OI-376]
 blocks: [fase-2]
 severity: high
@@ -82,3 +82,32 @@ Aga's availability.
 - **The start date and the share of her time**, if the move goes ahead.
 - **Whether Angelo Pastorelli and Gianpaolo Motta know**, given that Fase 2's
   fate is theirs to rule on.
+
+## 🟢 Update 2026-11-25 - she was still on Pienissimo today, and the release she owned is closed
+
+🟢 **The first thing this note said was owed has effectively happened**: PR #132
+was **merged at 18:10:26 CET** and the reporting release reached production at
+**18:19:59 CET**, with the follow-up commit `006e830` **"Deploy Production"**
+authored by **Anita Aga** at 18:26 CET →
+[OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+**She was not moved before it closed**, and the repository now has no open pull
+request.
+
+🔴 **Everything else is unmoved.** No source in this window mentions the
+reallocation: the DM where it was offered (`D0CEWML860G`) has **no new
+messages**, and a Slack search on her name across the window returns **0
+results**. So:
+
+- 🔴 **Still not agreed with her** in any source.
+- 🔴 **Still not approved above Aurel Mrruku** — and Fase 2's fate remains
+  Angelo Pastorelli's and Gianpaolo Motta's to rule on.
+- 🔴 **Still no start date and no share of her time.**
+- ⚠ **The premise has not changed, and it is now weaker-looking**: ROMI told the
+  client on 25 November that it will plan **a new migration**
+  ([OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md)),
+  which is work, while the staffing plan assumes _"se non parte pienissimo fase 2
+  e libera"_.
+
+⚠ **The follow-ups the release left open are hers in practice** — the tranche
+report schedule, due before month end, and whatever the client acceptance test
+turns into.

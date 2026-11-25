@@ -9222,6 +9222,68 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, attaching `Ordini non ins
 
 🔴 `#tproj-pienissimo` silent a fifth consecutive sweep · ⚠ Fathom returned nothing a thirty-fourth consecutive run · the Slack canvas is unchanged since 20.08.2026, **78 days** · 🔴 the dev group's own 5 November report is **unanswered a second day** · 🔴 [#337](open-items.md) lead conversion in Prod has no owner and the #286 fix on `Devmain_LeadChecks` is unmerged a fourteenth day · 🔴 [#313](open-items.md) the client has still been told nothing, a fourth day · 🔴 [#312](open-items.md) Anticipay unmentioned by any source, a fourth day with no date · 🔴 Zoho CRM expired on 31 October and no source has mentioned it, a sixteenth run · 🔴 `lead-web-to-lead (2).html` still unopened and unexplained · **the requirement register is untouched and stays v1.6**; the tranche obligation and now the two mandatory picklists are the v1.7 candidates.
 
+## 89. Update 2026-11-25 — Gmail came back, the consent exists, the training has dates, and a new migration is on the client's calendar
+
+**Nightly `requirements-check`, watermark 2026-11-24T22:00Z, one day — but Gmail was restored after four blind nights, so the mail window 20/11 22:00Z → 25/11 21:45Z was swept retroactively.**
+
+### 🔑 The written consent exists, and it was hiding in a thread
+
+Angelo Pastorelli answered Elena Spini's question of 24 November — _"ci dai tu il consenso a fare questo deploy?"_ — on **25 November at 10:47:33 CET**:
+
+> _"**per me puoi procedere**"_
+
+one ✅ reaction, preceded at 10:47:28 by _"Scusa ho letto adesso, si eravamo rimasti cosi con Daniele e le ho inviato un vocale ieri"_.
+
+🔑 **It is a thread reply, so no channel read could see it** — the channel itself has had no new top-level message since 24/11. 🟢 The _"abbiamo toccato PROD senza consenso"_ exposure is answered. 🔴 **Gianpaolo Motta's ok has never been recorded, at any point** (**OI-381**).
+
+### 🔴 The release went out six hours past its own deadline
+
+| | |
+| --- | --- |
+| Consent | 25/11 **10:47:33 CET** |
+| Committed deadline | _"domani entro le 12"_ |
+| PR #132 merged (`56a7020`) | **18:10:26 CET** |
+| Deployment `0AfSW000001NQPR0A4` complete | **18:19:59 CET** |
+| Commit `006e830` "Deploy Production" (Anita Aga) | **18:26 CET** |
+| Reported internally | **19:40:25 CET** — _"oggi ho rilasciato in prod dashboard e report"_ |
+
+🟢 **The repository now has no open pull request** and the merge-before-production practice was honoured. 🔴 **Everything the item said was owed is still owed**: no client acceptance test, no visibility decision, and **the tranche report is still not scheduled with five days to month end** (**OI-377**, **OI-381**).
+
+### 🟢🔑 The marketing training is scheduled, and the client answered in writing
+
+Elena Spini mailed the proposals on **24/11 at 19:27 CET**, ~4 hours after being told to. **Sabatino Rinaldi answered on 25/11 at 11:14** — 🔑 **the client's first written, cooperative reply since the PEC of 17 November** — asking to move off 2 December because the whole marketing staff is at an intensive. ROMI accepted as asked and fixed the calendar at **19:21 CET**:
+
+| When | Session |
+| --- | --- |
+| **Mon 30/11 10:00-11:00** | Clarifications and next steps — what is missing, **and the planning of a new migration** |
+| **Tue 1/12 10:00-11:00** | Final marketing check post-changes, including reminder timings — **run in production** |
+| **Thu 3/12 10:30-12:00** | Formazione Marketing **Modulo 1** — segments and newsletters |
+| **Fri 4/12 10:30-12:00** | Formazione Marketing **Modulo 2** — forms and landing pages |
+
+⚠ **The 1 December session carries a client-side prerequisite with no owner**: _"Dato che useremo l'ambiente di produzione, vi chiediamo di configurare prima una campagna di test con le date corrette, con la mappatura dell'edizione e i relativi prodotti associati"_, so as not to alter real data. 🔴 The nominal 24/11 and 26/11 dates both lapsed undelivered, and the scaletta, the 19/11 test pack, the no-show explanation and **the training record itself** are all still missing (**OI-378**).
+
+### 🆕🔴 OI-385 — a scope perimeter call, and an undefined new migration
+
+The client has been told the 30 November call covers _"pianificazione della nuova migrazione"_. 🔴 **"La nuova migrazione" appears with the definite article and no antecedent**: nothing says what it covers, what data it moves, who asked for it, or whether it is Fase 1 or Fase 2 — and the 24/11 instruction authorises training contact only.
+
+🔑 **The calendar invitation names the real subject** — **`PH: Pienissimo PERIMETRO`** — and the internal purpose is stated in the marketing group DM at 19:27 CET: _"dobbiamo capire tutto il perimetro delle cose che mancano"_, because _"se poi si sveglia il giorno X a dire aaaa ma c'era anche questo ora e veramente NO"_. 🔴 **Aurel Mrruku will not attend 30/11 or 1/12** — _"io non ci sono il 30 e l 1"_ — the two sessions Elena Spini says concern him, with no substitute named.
+
+### 🔴 What a working Gmail now proves absent
+
+- 🔴 **The PEC is not in this mailbox**, and neither is ROMI's reply of 19 November. Searches across 18–25 November on `romiagency@pec.it`, `pec.it`, `raccomandata`, `legale`, `avvocato`, `art. 1454` and `messa in mora` return nothing. **The term under art. 1454 c.c. is still unknown — a fifth day** (**OI-375**).
+- 🔴 **The scadenziario and the credit notes: a fifth day of silence**, now a verified negative across Slack (0 hits), Drive (no Pienissimo document activity), Fathom (0) and a restored Gmail (**OI-380**).
+- 🔴 **No Mexal WEBAPI credentials, no event list, no bundle-only article codes, no catalogue prices** — all four still owed by mail.
+
+### 🟢 Two names, and one new ambiguity
+
+🟢 **Daniela Morgese's surname is attested from a primary source at last** — her entry in the client mail directory on the live training thread — after four days on the unreachable list; the same thread attests **Matteo Distaso**. 🔴 Rebecca's reads only _"rebecca m"_.
+
+⚠ **Angelo Pastorelli's 24 November client contact was a voice message, not a call** — _"le ho inviato un vocale ieri"_ — content unrecorded. ⚠ And _"eravamo rimasti cosi con **Daniele**"_ is a masculine name matching nobody in the records against a feminine pronoun; **recorded as uncertain, not resolved**.
+
+### Unchanged
+
+🟡 The 20/11 internal report meeting turns out to have **a second, independent record** — the Gemini notes mailed for it, which attest _"senza pero fornire spiegazioni agli utenti"_ verbatim · 🔴 Fathom returned nothing a **forty-fourth** consecutive run · 🔴 Drive: 19 files in the window, **not one Pienissimo**, a fifth day · 🔴 The `Link utili Pienissimo` canvas is unchanged, newest entry **20.08.2026 — 97 days** · 🔴 No human has ever replied to a nightly report in `C0BQD34LLF4` · **The requirement register stays v1.6** · **No Apex test class was written or proposed.**
+
 ## 88. Update 2026-11-24 — the freeze lifted in two places, and the release waits on one consent
 
 **Nightly `requirements-check`, watermark 2026-11-23T22:00Z, one day.**

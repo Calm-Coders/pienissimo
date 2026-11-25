@@ -6,11 +6,11 @@ owner: Elena Spini
 with: Gianpaolo Motta, Angelo Pastorelli, Andrea Galotto, Aurel Mrruku, Fabrizio Mastracci
 org: both
 raised: 2026-11-19
-updated: 2026-11-24
+updated: 2026-11-25
 depends_on: [OI-342, OI-343]
 blocks: [go-live, fase-2]
 severity: gating
-uncertain: the PEC itself has still not been read - it is not in the Gmail mailbox and no copy was found in Drive, and its deadline under art. 1454 c.c. remains unknown; every statement of its contents here is Elena Spini's account of it on the 19/11 internal call. The surnames of Angelo Pastorelli and Andrea Galotto were established on 2026-11-20
+uncertain: the PEC itself has still not been read - with Gmail restored on 2026-11-25 it is confirmed absent from this mailbox, no copy was found in Drive, and its deadline under art. 1454 c.c. remains unknown; every statement of its contents here is Elena Spini's account of it on the 19/11 internal call. The surnames of Angelo Pastorelli and Andrea Galotto were established on 2026-11-20
 source: notes/meetings/2026-11-19 INTERNA Check temi PEC.md
 ---
 
@@ -190,3 +190,36 @@ unreachable for a second consecutive night.
 🟡 **Angelo Pastorelli also reported, at 15:36:00, _"oggi la sento per i punti
 aperti"_** — he keeps the client contact on the open points himself, for a third
 time in five days, and nothing records the content.
+
+## 🟡 2026-11-25 - client contact resumed and widened, and the PEC is now confirmed absent from the mailbox
+
+🟢 **Elena Spini acted on the authorisation the same evening it was given.** The
+training proposals went to the client at **24/11 19:27 CET** and the client
+answered on **25/11 11:14 CET** — 🔑 **Pienissimo's first written, cooperative
+reply since the PEC**, and it is operational, not legal →
+[OI-378](OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md).
+
+⚠ **But the contact has widened past what was authorised.** The 24/11
+instruction covered _"le proposte per le call di formazione"_. The calendar that
+went out on 25/11 also commits ROMI to a **clarifications and next-step call**
+and to **planning a new migration** →
+[OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md).
+🔴 **Nothing authorises either by name.** Still nothing authorises anyone to write
+to the client about the PEC, the scadenziario or the credit notes.
+
+🔴 **Gmail is back, and the PEC is not in it.** Four nights of _"unverifiable"_
+become a verified negative: searches across 18-25 November for
+`romiagency@pec.it`, `pec.it`, `raccomandata`, `legale`, `avvocato`,
+`art. 1454` and `messa in mora` return **nothing**, and no mail from any
+`@pienissimo.com` address other than the training thread exists in the window.
+⚠ So the PEC was not addressed to this mailbox and **ROMI's reply of 19 November
+was not sent from it either** — both live somewhere this account cannot reach.
+**The term under art. 1454 c.c. is still unknown, a fifth day.**
+
+🟢 **Angelo Pastorelli's 24/11 client contact is partly accounted for.** In
+`#tproj-pienissimo` on 25/11 at **10:47:28 CET** he wrote _"si eravamo rimasti
+cosi con Daniele e **le ho inviato un vocale ieri**"_ — so _"oggi la sento per i
+punti aperti"_ produced **a voice message, not a call**, and its content is not in
+any source. ⚠ _"Daniele"_ is masculine and matches nobody in the records while
+_"le"_ is feminine; see
+[OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).

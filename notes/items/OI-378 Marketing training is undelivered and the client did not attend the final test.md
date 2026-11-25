@@ -6,12 +6,13 @@ owner: Fabrizio Mastracci
 with: Elena Spini, Matteo D, Rebecca M, Fabrizio Paganelli
 org: both
 raised: 2026-11-19
-updated: 2026-11-24
+updated: 2026-11-25
 depends_on: [OI-375, OI-246]
 blocks: []
 severity: high
-uncertain: the surnames of Matteo D and Rebecca M on the Pienissimo side are not established - only their mail local parts appear on the invitation; the contractual training figure of 20 hours is Elena Spini's spoken answer and was not read from the contract
+uncertain: Rebecca M's surname is still not established - her mail directory entry reads only "rebecca m"; Matteo Distaso's and Daniela Morgese's are now attested from the live client thread. The contractual training figure of 20 hours is Elena Spini's spoken answer and was not read from the contract
 source: notes/meetings/2026-11-19 INTERNA Check temi PEC.md
+also_source: Gmail thread 1a213f12a0542f0a, [ROMI-PIENISSIMO] - Proposta call di formazione Marketing, 2026-11-24 19:27 to 2026-11-25 19:21 CET
 ---
 
 # OI-378 - Marketing training is undelivered and the client did not attend the final test
@@ -199,3 +200,65 @@ the one covering the forms and landing pages Pienissimo Live depends on
 ⚠ **Still nothing on the no-show, still no training record**, and the 20
 contractual hours remain an unverified spoken figure — a **sixth** day. The
 PEC's second ground still turns on a document that does not exist.
+
+## 🟢🔑 Update 2026-11-25 - the proposals were sent, the client answered, and the training has dates
+
+**Everything this note said was missing on 24 November now exists.** Gmail came
+back after four blind nights and the whole exchange is in it, thread
+`1a213f12a0542f0a`, subject **`[ROMI-PIENISSIMO] - Proposta call di formazione
+Marketing (settimana 30/11-4/12)`**.
+
+| When | Who | What |
+| --- | --- | --- |
+| **24/11 19:27 CET** | Elena Spini → Sabatino Rinaldi, Fabrizio Paganelli; cc Daniela Morgese, Matteo Distaso, `amministrazione@`, Rebecca M, Angelo Pastorelli, Fabrizio Mastracci, Aurel Mrruku | 🟢 **The proposals went out** — the same evening as the instruction, ~4 hours after it |
+| **25/11 11:14 CET** | Sabatino Rinaldi → Elena Spini, Fabrizio Paganelli | 🔑 **The client answered** and asked to move |
+| **25/11 19:21 CET** | Elena Spini → the same list | 🟢 **The calendar is fixed** |
+
+🔑 **This is the client's first written, cooperative reply since the PEC of 17
+November**, and it is operational rather than legal: _"Noi il 2 Dicembre siamo
+impegnati all'intensive con tutto lo staff marketing. Quindi ti chiediamo se
+fosse possibile fissare le due call il 3 e il 4 Dicembre, in alternativa alla
+proposta del 2 Dicembre."_ ROMI accepted it as asked.
+
+### The agreed calendar
+
+| When | Session |
+| --- | --- |
+| **Mon 30 Nov, 10:00-11:00** | _Call di chiarimenti e next step_ — what is missing against what was delivered, **and the planning of a new migration** → [OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md) |
+| **Tue 1 Dec, 10:00-11:00** | _Ultimo check della soluzione finale Marketing (post modifiche)_ — the implemented flow including the reminder timings |
+| **Thu 3 Dec, 10:30-12:00** | **Formazione Marketing, Modulo 1** — segment creation and newsletter sending (1h30) |
+| **Fri 4 Dec, 10:30-12:00** | **Formazione Marketing, Modulo 2** — forms and landing pages (1h30) |
+
+🟢 **Two modules, 3 hours, inside next week** — which matches Fabrizio
+Mastracci's own 19/11 commitment (_"3-4 ore e sufficiente"_, _"entro la settimana
+prossima ce la leviamo dalle scatole"_) and his scaletta in content: segments,
+sending, forms, landing pages.
+
+⚠ **The final check of 1 December runs in production, and the client is asked to
+prepare for it.** From the 24/11 mail: _"Dato che useremo l'ambiente di
+produzione, vi chiediamo di configurare prima una campagna di test con le date
+corrette, con la mappatura dell'edizione e i relativi prodotti associati da poter
+utilizzare (cosi da non alterare i dati reali)."_ 🔴 **That is a client-side
+prerequisite with no owner named and no confirmation**, and it lands on the forms
+and consent-field questions still open in
+[OI-371](OI-371%20Opportunities%20are%20re-keyed%20from%20Zoho%20while%20the%20web%20forms%20wait%20for%20ROMI.md)
+and [OI-340](OI-340%20The%20website%20lead%20forms%20have%20no%20field%20for%20the%20marketing%20consent.md).
+
+🔴 **What has still not happened:**
+
+- **The 24/11 and 26/11 nominal dates both lapsed undelivered.** The sessions
+  that exist are new ones, a week later. Pienissimo Live (24-26/11) has run its
+  course with no training delivered against it.
+- **The scaletta is still not recorded** in any source — an eighth window. The
+  mail describes the two modules by title only.
+- **The test pack of mini-campaigns offered on 19/11 is still not recorded as
+  sent** — a seventh day.
+- 🔴 **No explanation for the 19/11 no-show** was asked for or given.
+- 🔴 **The training record** — dates, hours, attendees, recordings against the 20
+  contractual hours — **still does not exist**, a **seventh** day, and the PEC's
+  second ground turns on it.
+
+🟢 **Two names are now attested from a primary source** by the mail directory on
+this thread: **Daniela Morgese** (`daniela@pienissimo.com`) and **Matteo
+Distaso** (`matteo.d@pienissimo.com`). 🔴 **Rebecca's surname is not** — her
+directory entry reads only _"rebecca m"_.

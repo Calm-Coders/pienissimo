@@ -9572,6 +9572,68 @@ Aurel Mrruku, Gmail `1a1b1c5d7e2462cb`, **16:51:35Z**, in allegato `Ordini non i
 
 🔴 `#tproj-pienissimo` silenzioso per il quinto sweep consecutivo · ⚠ Fathom non ha restituito nulla al trentaquattresimo run consecutivo · il canvas Slack è invariato dal 20.08.2026, **78 giorni** · 🔴 il report del 5 novembre del gruppo dev è **senza risposta da due giorni** · 🔴 [#337](open-items.it.md) la conversione del lead in Prod non ha un titolare e la fix del #286 su `Devmain_LeadChecks` è non integrata da quattordici giorni · 🔴 [#313](open-items.it.md) al cliente non è stato ancora detto nulla, quarto giorno · 🔴 [#312](open-items.it.md) Anticipay non menzionato da nessuna fonte, quarto giorno senza data · 🔴 Zoho CRM è scaduto il 31 ottobre e nessuna fonte ne ha parlato, sedicesimo run · 🔴 `lead-web-to-lead (2).html` ancora non aperto e non spiegato · **il registro dei requisiti è intatto e resta v1.6**; l'obbligatorietà delle tranche e ora le due picklist obbligatorie sono i candidati v1.7.
 
+## 89. Aggiornamento 25/11/2026 — Gmail è tornata, il consenso esiste, la formazione ha delle date e una nuova migrazione è nel calendario del cliente
+
+**`requirements-check` notturno, watermark 2026-11-24T22:00Z, un giorno — ma Gmail è stata ripristinata dopo quattro notti cieche, quindi la finestra di posta 20/11 22:00Z → 25/11 21:45Z è stata esaminata retroattivamente.**
+
+### 🔑 Il consenso scritto esiste, ed era nascosto in un thread
+
+Angelo Pastorelli ha risposto alla domanda di Elena Spini del 24 novembre — _"ci dai tu il consenso a fare questo deploy?"_ — il **25 novembre alle 10:47:33 CET**:
+
+> _"**per me puoi procedere**"_
+
+con una ✅, preceduta alle 10:47:28 da _"Scusa ho letto adesso, si eravamo rimasti così con Daniele e le ho inviato un vocale ieri"_.
+
+🔑 **È una risposta in un thread, quindi nessuna lettura del canale poteva vederla** — il canale non ha nuovi messaggi di primo livello dal 24/11. 🟢 L'esposizione _"abbiamo toccato PROD senza consenso"_ è risolta. 🔴 **L'ok di Gianpaolo Motta non è mai stato registrato, in nessun momento** (**OI-381**).
+
+### 🔴 Il rilascio è uscito con sei ore di ritardo rispetto al proprio impegno
+
+| | |
+| --- | --- |
+| Consenso | 25/11 **10:47:33 CET** |
+| Impegno assunto | _"domani entro le 12"_ |
+| PR #132 unita (`56a7020`) | **18:10:26 CET** |
+| Deployment `0AfSW000001NQPR0A4` completato | **18:19:59 CET** |
+| Commit `006e830` "Deploy Production" (Anita Aga) | **18:26 CET** |
+| Comunicato internamente | **19:40:25 CET** — _"oggi ho rilasciato in prod dashboard e report"_ |
+
+🟢 **Il repository non ha più pull request aperte** e la prassi del merge prima della produzione è stata rispettata. 🔴 **Tutto ciò che l'item indicava come dovuto resta dovuto**: nessun test di accettazione con il cliente, nessuna decisione sulla visibilità e **il report delle tranche non è ancora schedulato, a cinque giorni dalla fine del mese** (**OI-377**, **OI-381**).
+
+### 🟢🔑 La formazione marketing è calendarizzata, e il cliente ha risposto per iscritto
+
+Elena Spini ha inviato le proposte il **24/11 alle 19:27 CET**, circa 4 ore dopo l'istruzione. **Sabatino Rinaldi ha risposto il 25/11 alle 11:14** — 🔑 **la prima risposta scritta e collaborativa del cliente dopo la PEC del 17 novembre** — chiedendo di spostare il 2 dicembre perché tutto lo staff marketing è in intensive. ROMI ha accettato come richiesto e ha fissato il calendario alle **19:21 CET**:
+
+| Quando | Sessione |
+| --- | --- |
+| **lun 30/11 10:00-11:00** | Chiarimenti e next step — cosa manca, **e la pianificazione di una nuova migrazione** |
+| **mar 1/12 10:00-11:00** | Ultimo check della soluzione finale Marketing, inclusi i tempi di reminder — **in ambiente di produzione** |
+| **gio 3/12 10:30-12:00** | Formazione Marketing **Modulo 1** — segmenti e newsletter |
+| **ven 4/12 10:30-12:00** | Formazione Marketing **Modulo 2** — form e landing page |
+
+⚠ **La sessione dell'1 dicembre comporta un prerequisito lato cliente senza un responsabile indicato**: _"Dato che useremo l'ambiente di produzione, vi chiediamo di configurare prima una campagna di test con le date corrette, con la mappatura dell'edizione e i relativi prodotti associati"_, così da non alterare i dati reali. 🔴 Le date nominali del 24/11 e del 26/11 sono entrambe scadute senza erogazione, e la scaletta, il pacchetto di test del 19/11, la spiegazione della mancata partecipazione e **il registro della formazione** mancano ancora tutti (**OI-378**).
+
+### 🆕🔴 OI-385 — una call sul perimetro e una nuova migrazione non definita
+
+Al cliente è stato comunicato che la call del 30 novembre copre la _"pianificazione della nuova migrazione"_. 🔴 **"La nuova migrazione" compare con l'articolo determinativo e senza antecedente**: nulla dice cosa comprenda, quali dati sposti, chi l'abbia chiesta, né se sia Fase 1 o Fase 2 — e l'istruzione del 24/11 autorizza solo il contatto sulla formazione.
+
+🔑 **L'invito in calendario nomina il vero oggetto** — **`PH: Pienissimo PERIMETRO`** — e lo scopo interno è dichiarato nel DM di gruppo marketing alle 19:27 CET: _"dobbiamo capire tutto il perimetro delle cose che mancano"_, perché _"se poi si sveglia il giorno X a dire aaaa ma c'era anche questo ora è veramente NO"_. 🔴 **Aurel Mrruku non partecipa né il 30/11 né l'1/12** — _"io non ci sono il 30 e l 1"_ — le due sessioni che secondo Elena Spini lo riguardano, senza alcun sostituto indicato.
+
+### 🔴 Ciò che una Gmail funzionante ora dimostra assente
+
+- 🔴 **La PEC non è in questa casella**, e non c'è nemmeno la risposta ROMI del 19 novembre. Le ricerche dal 18 al 25 novembre su `romiagency@pec.it`, `pec.it`, `raccomandata`, `legale`, `avvocato`, `art. 1454` e `messa in mora` non restituiscono nulla. **Il termine ex art. 1454 c.c. resta ignoto — quinto giorno** (**OI-375**).
+- 🔴 **Scadenziario e note di credito: quinto giorno di silenzio**, ora un riscontro negativo verificato su Slack (0 risultati), Drive (nessuna attività documentale Pienissimo), Fathom (0) e una Gmail ripristinata (**OI-380**).
+- 🔴 **Nessuna credenziale WEBAPI Mexal, nessuna lista eventi, nessun codice articolo solo-bundle, nessun listino** — tutti e quattro ancora dovuti per mail.
+
+### 🟢 Due nomi, e una nuova ambiguità
+
+🟢 **Il cognome di Daniela Morgese è finalmente attestato da una fonte primaria** — la sua voce nella rubrica di posta del cliente sul thread della formazione — dopo quattro giorni nell'elenco degli irraggiungibili; lo stesso thread attesta **Matteo Distaso**. 🔴 Quella di Rebecca riporta solo _"rebecca m"_.
+
+⚠ **Il contatto di Angelo Pastorelli con il cliente del 24 novembre è stato un messaggio vocale, non una call** — _"le ho inviato un vocale ieri"_ — di contenuto non registrato. ⚠ E _"eravamo rimasti così con **Daniele**"_ è un nome maschile che non corrisponde a nessuno nei record, con un pronome femminile; **registrato come incerto, non risolto**.
+
+### Invariati
+
+🟡 La riunione interna sui report del 20/11 ha in realtà **un secondo record indipendente** — gli appunti Gemini inviati per essa, che attestano verbatim _"senza però fornire spiegazioni agli utenti"_ · 🔴 Fathom non ha restituito nulla al **quarantaquattresimo** run consecutivo · 🔴 Drive: 19 file nella finestra, **nessuno Pienissimo**, quinto giorno · 🔴 Il canvas `Link utili Pienissimo` è invariato, voce più recente **20.08.2026 — 97 giorni** · 🔴 Nessun essere umano ha mai risposto a un report notturno in `C0BQD34LLF4` · **Il registro dei requisiti resta v1.6** · **Nessuna classe di test Apex è stata scritta o proposta.**
+
 ## 88. Aggiornamento 24/11/2026 — il blocco si apre su due punti, e il rilascio attende un consenso
 
 **`requirements-check` notturno, watermark 2026-11-23T22:00Z, un giorno.**

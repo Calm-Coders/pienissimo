@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Anita Aga
 org: ROMI
 raised: 2026-11-19
-updated: 2026-11-24
+updated: 2026-11-25
 depends_on: [OI-375]
 blocks: [fase-2]
 severity: gating
@@ -184,3 +184,30 @@ and no mention of the PEC or of what the client was told.
 aperti"_** — a third direction-to-direction contact about the open points, on
 24 November. ⚠ Nothing records what came of it; see
 [OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+
+## 🟡 Update 2026-11-25 - the authorised exception is delivered, and work is being planned past the freeze
+
+🟢 **The one thing this freeze allowed is done.** The reports and dashboards are
+in production, deployed 25/11 18:19:59 CET with Angelo Pastorelli's written
+consent of 10:47:33 CET →
+[OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+PR #132 is merged and the repository has no open pull request.
+
+⚠ **So the exception is spent, and the freeze itself has never been formally
+lifted** — yet new work is now on the client's calendar:
+
+| Planned | Authorised by the 24/11 instruction? |
+| --- | --- |
+| Marketing training, 3 and 4 December | 🟢 **Yes** — _"manda al cliente le proposte per le call di formazione"_ |
+| _Ultimo check della soluzione finale Marketing_, 1 December, **in production** | ⚠ **Not named.** Arguably part of training; it is a production session |
+| _Call di chiarimenti e next step_ + **"pianificazione della nuova migrazione"**, 30 November | 🔴 **No.** New scope → [OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md) |
+
+🔴 **_"Il resto fermi tutti"_ has not been withdrawn in any source**, and Fase 2
+is still stopped — while a migration is being promised to the client in writing.
+⚠ **The freeze is now being overtaken in practice rather than decided.**
+
+🔴 **The scadenziario and the credit notes are unmentioned for a fifth day**
+([OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md)),
+and [OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md)'s
+four `IN LAVORAZIONE` rows and the 13/11 workbook for a **seventh** window — both
+of which the 30 November perimeter call would have to settle.

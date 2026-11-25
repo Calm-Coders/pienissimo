@@ -10,6 +10,56 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-25 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail (9 queries - 🟢 **the connector came back after four blind
+  nights**, so the mail window 20/11 → 25/11 was done retroactively), Slack (6
+  conversations + 2 threads + 8 searches + the canvas), Drive (2 searches),
+  Fathom, git and GitHub from watermark **2026-11-24T22:00Z**, **one day**.
+  Opened **OI-385**; updated **OI-375**, **OI-376**, **OI-377**, **OI-378**,
+  **OI-380**, **OI-381**, **OI-384**, the Daniela Morgese person note and the
+  20/11 meeting note; MAP, INDEX (7 rows amended + 1 item row + 1 meeting row +
+  1 trace row, 650 -> 652), both trackers (7 regenerated rows + 1 new row each),
+  §89 in both recaps,
+  [the trace](notes/traces/Source%20trace%202026-11-25%20nightly.md).
+- **State:** 🔑 **The written consent for the production release exists, and it
+  was a thread reply no channel read could see.** Angelo Pastorelli,
+  `#tproj-pienissimo` thread, **25/11 10:47:33 CET**: _"per me puoi procedere"_,
+  one ✅ — closing OI-381's open question. 🔴 **Gianpaolo Motta's ok has still
+  never been recorded.** 🔴 The release then **missed its own _"entro le 12"_ by
+  six hours**: PR #132 merged 18:10:26, deploy `0AfSW000001NQPR0A4` complete
+  **18:19:59 CET**, `006e830` at 18:26, told to the marketing DM at 19:40.
+  🟢 **No open PR remains.** 🟢🔑 **The marketing training has dates at last** —
+  Elena Spini mailed the proposals 24/11 19:27, **Sabatino Rinaldi answered 25/11
+  11:14**, the client's **first written cooperative reply since the PEC**, and
+  the calendar is **30/11** clarifications · **1/12** final marketing check **in
+  production** · **3/12** Modulo 1 · **4/12** Modulo 2 (**OI-378**). 🆕🔴
+  **OI-385**: the client is told the 30/11 call will plan _"la nuova
+  migrazione"_ — **undefined, unestimated, unruled Fase 1/2, unauthorised** — the
+  invitation is titled **`PH: Pienissimo PERIMETRO`**, the internal purpose is
+  scope closure (_"se poi si sveglia il giorno X…"_), and 🔴 **Aurel Mrruku will
+  not attend 30/11 or 1/12**. 🔴 **Scadenziario and credit notes: a fifth day**,
+  now a verified negative on all four sources. 🔴 **A working Gmail proves the PEC
+  is not in this mailbox**, nor ROMI's reply — the art. 1454 term is still
+  unknown. 🟢 **Daniela Morgese's surname attested** from the client mail
+  directory.
+- **Next:** before **Monday 30/11 10:00** — get _"la nuova migrazione"_ defined in
+  writing, name a build representative for 30/11 and 1/12, and establish whether
+  the scadenziario and the credit notes are on that agenda, because the call's
+  internal purpose is to **close** the missing-items list. Also still owed: the
+  **tranche report schedule** (five days to month end), the visibility decision,
+  the client acceptance test, and an owner for the client-side test campaign the
+  1/12 production session needs.
+- **Watch:** 🔑 **Read the threads, not just the channel.** The consent — the single
+  most important fact in this window — existed only as a reply under a 24/11
+  message; `slack_read_channel` with the watermark as `oldest` returned **0
+  messages** for `#tproj-pienissimo`. ⚠ _"eravamo rimasti cosi con **Daniele**"_
+  is a masculine name matching nobody in the records against a feminine pronoun;
+  it is recorded as uncertain and **must not** be resolved to Daniela Morgese
+  without a primary source. The register stays **v1.6**; no Apex test class was
+  written or proposed (the release contained no Apex, so coverage did not gate
+  it).
+
 ## 2026-11-25 - codex - reporting release deployed with fixed running user
 
 - **Did:** applied the explicit user instruction to run all five dashboards as Amministrazione Pienissimo. Validated (`0AfSW000001NQMD0A4`) and deployed (`0AfSW000001NQPR0A4`) all 26 reporting components to `Pienissimo Prod`; completed 17:19:59Z.

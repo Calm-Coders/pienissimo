@@ -6,11 +6,11 @@ owner: Elena Spini
 with: Angelo Pastorelli, Gianpaolo Motta, Daniela Morgese, Aurel Mrruku
 org: both
 raised: 2026-11-20
-updated: 2026-11-24
+updated: 2026-11-25
 depends_on: [OI-375, OI-379]
 blocks: [fase-1-closure]
 severity: gating
-uncertain: the meeting was not recorded in any source this account can reach and no transcript or minute exists; everything here is Elena Spini's account in Slack the same afternoon and evening, and the source names "Daniela" without a surname
+uncertain: the meeting was not recorded in any source this account can reach and no transcript or minute exists; everything here is Elena Spini's account in Slack the same afternoon and evening, and the 20/11 source names "Daniela" without a surname, though the surname Morgese is now attested from the live client mail thread of 25/11
 source: Slack C0C38JJ9D1T 2026-11-20 16:49-16:53 CET and C0B5T3RB4FM 2026-11-20 19:00 CET
 ---
 
@@ -170,3 +170,40 @@ which the client asked for on 20 November.
 
 ⚠ **Daniela's surname is still not established from a primary source** — a fourth
 day.
+
+## 🔴 Update 2026-11-25 - a fifth day of silence, and the briefing was a voice message
+
+🔴 **Neither the scadenziario nor the credit notes is mentioned anywhere in this
+window.** Slack keyword search for `scadenziario` returns **0** for a fifth
+consecutive day; `PEC` returns **0**; Drive has **no Pienissimo document activity
+at all** for a fifth day; and Gmail — restored tonight after four blind nights —
+holds **no client mail in the window except the training thread**. ⚠ So the
+silence is now a verified negative across all four sources, not an unreachable
+one. **Neither is estimated, ruled Fase 1 or Fase 2, or started.**
+
+🔑 **What the 24 November direction-to-direction contact actually was is now on
+the record, and it was not a call.** Angelo Pastorelli, `#tproj-pienissimo`
+thread reply, **25/11 10:47:28 CET**:
+
+> _"Scusa ho letto adesso, si eravamo rimasti cosi con Daniele e **le ho inviato
+> un vocale ieri**"_
+
+⚠ **A voice message, sent 24 November, content unrecorded** — so _"oggi la sento
+per i punti aperti"_ produced no minute, no transcript and no written outcome,
+and this item has had no decision for a fifth day. ⚠ _"Daniele"_ is **masculine**
+and matches nobody in these records, while _"le"_ is feminine and points at
+Daniela Morgese; the two cannot both be right. **Recorded as uncertain — do not
+resolve it without a primary source.**
+
+🟡 **There is now a venue for it.** The _"Call di chiarimenti e next step"_ of
+**30 November 10:00-11:00** is framed as _"verifica di cosa manca rispetto a
+quanto gia consegnato"_ →
+[OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md).
+🔴 **Nothing says the scadenziario or the credit notes are on its agenda**, and the
+internal purpose of that call is to **close** the list of what is missing — so if
+they are not raised in it they may be excluded by it. ⚠ **That is the thing to
+watch before Monday 10:00.**
+
+🟢 **Daniela Morgese's surname is attested at last**, from the mail directory on
+the live client thread (`daniela@pienissimo.com` → "Daniela Morgese"), after four
+days on the unreachable list.

@@ -10,12 +10,59 @@ updated: 2026-11-25
 depends_on: [OI-376, OI-377]
 blocks: [fase-1-closure]
 severity: high
-uncertain: client acceptance, broader visibility agreement and scheduled tranche-report delivery remain unverified
+uncertain: client acceptance, the visibility decision and the scheduled tranche-report delivery remain unverified; the consent question of 24/11 is now answered
 source: notes/meetings/2026-11-20 INTERNA Check Report.md
-also_source: Slack C0B5T3RB4FM 2026-11-24 15:35-17:18 CET
+also_source: Slack C0B5T3RB4FM 2026-11-24 15:35-17:18 CET and 2026-11-25 10:47 CET; Slack C0C38JJ9D1T 2026-11-25 19:40 CET
 ---
 
 # OI-381 - The report and dashboard remediation is unmerged and due in production on a holiday
+
+## 🟢🔑 Update 2026-11-25 (nightly sweep) - the written consent exists, and the release went out six hours past its own deadline
+
+🔑 **The question this note carried as its `uncertain:` is closed.** Angelo
+Pastorelli answered Elena Spini's 17:18 CET question of 24 November — **as a
+thread reply, which is why no channel read found it** — on 25 November at
+**10:47:33 CET**:
+
+> _"**per me puoi procedere**"_
+
+one ✅ reaction. Immediately before it, at **10:47:28**: _"Scusa ho letto adesso,
+si eravamo rimasti cosi con Daniele e le ho inviato un vocale ieri"_.
+
+🟢 **So the deploy was consented in writing, by the gatekeeper asked, roughly
+seven hours before it happened.** The _"abbiamo toccato PROD senza consenso"_
+exposure Elena Spini named is answered. 🔴 **Gianpaolo Motta's ok is still
+nowhere in the record**, at any point.
+
+🔴 **The release missed its own deadline by about six hours.** The commitment was
+_"domani entro le 12"_:
+
+| | |
+| --- | --- |
+| Consent given | **25/11 10:47:33 CET** |
+| Committed deadline | **25/11 12:00 CET** |
+| PR #132 merged to `DevMain` | **25/11 18:10:26 CET** (`56a7020`, merged by `aureliii`) |
+| Production deployment `0AfSW000001NQPR0A4` completed | **25/11 18:19:59 CET** (17:19:59Z) |
+| Committed to `DevMain` | **`006e830` "Deploy Production"**, authored **Anita Aga**, 18:26 CET |
+| Told to the marketing group DM | **19:40:25 CET** — Aurel Mrruku: _"oggi ho rilasciato in prod dashboard e report"_ |
+
+🟢 **PR #132 is merged and the repository now has no open pull request** — the
+merge-before-production practice Aurel Mrruku defended on 19/11 was honoured.
+
+🔴 **The three things this note says are owed are still owed**, unchanged by the
+release:
+
+- **No client acceptance test.** Asked 24/11 16:15:45, never answered.
+- **No decision on who may see the reports and dashboards.** Same message, same
+  silence, while `Agente.permissionset` shipped with the release.
+- 🔴 **The tranche report is still not scheduled**, and November now has **five
+  days** left. This is the one dated commitment attached to the item.
+
+⚠ **The release was still unaccompanied.** Nothing in this window records any
+communication to the client or to the users about it — consistent with the 20/11
+instruction _"senza pero fornire spiegazioni agli utenti"_, which the Gemini
+notes of that meeting (found in Gmail this sweep) carry verbatim as the meeting's
+one recommended next step.
 
 ## Update 2026-11-25 - production release completed with the requested fixed running user
 

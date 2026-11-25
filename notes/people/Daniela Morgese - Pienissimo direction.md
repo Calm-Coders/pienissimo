@@ -3,7 +3,7 @@ id: person-daniela-morgese
 type: person
 status: active
 org: Pienissimo
-updated: 2026-11-20
+updated: 2026-11-25
 ---
 
 # Daniela Morgese - Pienissimo direction
@@ -94,3 +94,23 @@ and it is recorded as one.
 answered to **Giuliano Lanzetti** as Pienissimo's legal representative
 ([the person note](Giuliano%20Lanzetti%20-%20CEO%20of%20both%20Pienissimo%20companies.md)),
 while the anger about that answer, and the private call that followed, are hers.
+
+## 🟢 2026-11-25 - the surname is attested from a primary source
+
+**The four-day-old gap is closed.** `daniela@pienissimo.com` appears as a cc
+recipient on the live client thread `[ROMI-PIENISSIMO] - Proposta call di
+formazione Marketing` (Elena Spini, 24 November 19:27 CET and 25 November 19:21
+CET), and the mail directory renders that address as **"Daniela Morgese"**.
+
+🟢 So the identification that had rested on role and inference — _"la famosa
+direzione"_, the only Daniela in the records — is now attested against the
+client's own mail directory. The same thread attests **Matteo Distaso**
+(`matteo.d@pienissimo.com`). 🔴 **Rebecca's surname is still not attested**: her
+directory entry reads only _"rebecca m"_.
+
+⚠ **One ambiguity is new, and it is not resolved.** Angelo Pastorelli, in
+`#tproj-pienissimo` on 25 November at 10:47:28 CET, wrote _"si eravamo rimasti
+cosi con **Daniele** e **le** ho inviato un vocale ieri"_ — a masculine name with
+a feminine indirect object, about the 24 November contact with the client's
+direction. It most likely means her, but the record does not say so →
+[OI-380](../items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).

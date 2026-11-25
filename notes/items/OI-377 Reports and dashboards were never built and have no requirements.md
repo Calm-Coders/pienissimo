@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Aurel Mrruku, Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-19
-updated: 2026-11-24
+updated: 2026-11-25
 depends_on: [OI-375]
 blocks: []
 severity: gating
@@ -168,3 +168,31 @@ asserted, built, accepted and shipped entirely inside ROMI.
 
 🟡 **The tranche report schedule is now six days from its deadline** and still
 nothing is scheduled.
+
+## 🔴 Update 2026-11-25 - it is production metadata now, and all three gaps survived the release
+
+**The build is live.** Deployment `0AfSW000001NQPR0A4` completed 25/11 18:19:59
+CET: five dashboards, ten reports, three custom report types, four folders, the
+Home page and template, Sales app reporting navigation and agent reporting
+access →
+[OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md).
+
+🔴 **Nothing this note is about was cured by shipping it:**
+
+| | |
+| --- | --- |
+| A written client requirement | 🔴 **None** |
+| A requirement in the register | 🔴 **None.** The register stays **v1.6** |
+| The contract clause making them a deliverable | 🔴 **Still not quoted**, a **seventh** day |
+| A client acceptance test | 🔴 **None.** Asked 24/11 16:15:45, never answered |
+| An agreed visibility model | 🔴 **None.** Same message, same silence — and `Agente.permissionset` shipped |
+| The tranche report schedule | 🔴 **Not created.** **Five days** to month end |
+
+🟡 **The 20/11 meeting's own record surfaced this sweep**, in the Gemini notes
+mailed for `[PIENISSIMO] - Interna Check Report` (auto-generated 20/11 09:47
+CET). Its single recommended next step is _"[Aurel mrruku] Eseguire il deployment
+delle dashboard e dei report: in produzione lunedi se richiesto dagli
+stakeholder, **senza pero fornire spiegazioni agli utenti**"_ — which corroborates
+the instruction already held, verbatim, from an independent source. ⚠ It also
+confirms that an **unexplained** release was the plan of record from 20 November
+onward, and the release of 25/11 was in fact unaccompanied.
