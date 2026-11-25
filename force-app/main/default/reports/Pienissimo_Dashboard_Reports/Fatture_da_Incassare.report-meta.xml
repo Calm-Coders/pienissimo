@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns><field>CUST_NAME</field></columns>
+    <columns><aggregateTypes>Sum</aggregateTypes><field
+    >Fattura__c.Importo_Residuo__c</field></columns>
+    <filter>
+        <criteriaItems><column>Fattura__c.Tipo_Documento__c</column><operator
+      >equals</operator><value>Fattura</value></criteriaItems>
+        <criteriaItems><column>Fattura__c.Importo_Residuo__c</column><operator
+      >greaterThan</operator><value>0</value></criteriaItems>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown><dateGranularity>Day</dateGranularity><field
+    >Fattura__c.Stato_Pagamento__c</field><sortOrder
+    >Asc</sortOrder></groupingsDown>
+    <name>Fatture - importi da incassare</name>
+    <reportType>CustomEntity$Fattura__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter><dateColumn
+    >Fattura__c.Data_Documento__c</dateColumn><interval
+    >INTERVAL_CUSTOM</interval></timeFrameFilter>
+</Report>

@@ -1484,6 +1484,32 @@
         <type>Flexipage</type>
         <profile>Admin</profile>
     </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>Tab</actionName>
+        <content>Getting_Started_Home</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>standard-home</pageOrSobjectType>
+        <type>Flexipage</type>
+        <profile>Agente</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Account_Azienda_Two_Column</content>
+        <formFactor>Small</formFactor>
+        <pageOrSobjectType>Account</pageOrSobjectType>
+        <recordType>Account.Azienda</recordType>
+        <type>Flexipage</type>
+        <profile>Plus</profile>
+    </profileActionOverrides>
+    <profileActionOverrides>
+        <actionName>View</actionName>
+        <content>Account_Azienda_Two_Column</content>
+        <formFactor>Large</formFactor>
+        <pageOrSobjectType>Account</pageOrSobjectType>
+        <recordType>Account.Azienda</recordType>
+        <type>Flexipage</type>
+        <profile>Plus</profile>
+    </profileActionOverrides>
     <setupExperience>all</setupExperience>
     <tabs>standard-home</tabs>
     <tabs>standard-Lead</tabs>
@@ -1501,6 +1527,7 @@
     <tabs>Integration_Log__c</tabs>
     <tabs>BundleComponent__c</tabs>
     <tabs>standard-Event</tabs>
+    <tabs>standard-report</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>LightningSales_UtilityBar</utilityBar>
 </CustomApplication>

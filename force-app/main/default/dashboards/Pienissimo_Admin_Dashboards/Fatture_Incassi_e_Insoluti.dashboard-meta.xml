@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#FFFFFF</backgroundStartColor>
+    <dashboardGridLayout>
+        <dashboardGridComponents>
+            <colSpan>6</colSpan>
+            <columnIndex>0</columnIndex>
+            <dashboardComponent>
+                <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+                <chartAxisRange>Auto</chartAxisRange>
+                <chartSummary>
+                    <axisBinding>y</axisBinding>
+                    <column>RowCount</column>
+                </chartSummary>
+                <componentType>Donut</componentType>
+                <displayUnits>Integer</displayUnits>
+                <drillEnabled>true</drillEnabled>
+                <drillToDetailEnabled>false</drillToDetailEnabled>
+                <enableHover>true</enableHover>
+                <expandOthers>true</expandOthers>
+                <groupingColumn>Fattura__c.Stato_Pagamento__c</groupingColumn>
+                <groupingSortProperties />
+                <header>Fatture per stato pagamento</header>
+                <legendPosition>Right</legendPosition>
+                <report
+        >Pienissimo_Dashboard_Reports/Fatture_per_Stato_Pagamento</report>
+                <showPercentage>true</showPercentage>
+                <showTotal>true</showTotal>
+                <showValues>true</showValues>
+                <sortBy>RowLabelAscending</sortBy>
+                <sortLegendValues>false</sortLegendValues>
+                <title>Numero di fatture</title>
+                <useReportChart>false</useReportChart>
+            </dashboardComponent>
+            <rowIndex>0</rowIndex>
+            <rowSpan>6</rowSpan>
+        </dashboardGridComponents>
+        <dashboardGridComponents>
+            <colSpan>6</colSpan>
+            <columnIndex>6</columnIndex>
+            <dashboardComponent>
+                <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+                <chartAxisRange>Auto</chartAxisRange>
+                <chartSummary>
+                    <aggregate>Sum</aggregate>
+                    <axisBinding>y</axisBinding>
+                    <column>Fattura__c.Scadenze__r$Importo__c</column>
+                </chartSummary>
+                <componentType>Column</componentType>
+                <displayUnits>Auto</displayUnits>
+                <drillEnabled>true</drillEnabled>
+                <drillToDetailEnabled>false</drillToDetailEnabled>
+                <enableHover>true</enableHover>
+                <expandOthers>false</expandOthers>
+                <groupingColumn
+        >Fattura__c.Scadenze__r$Data_Scadenza__c</groupingColumn>
+                <groupingSortProperties />
+                <header>Scadenze da incassare per settimana</header>
+                <legendPosition>Bottom</legendPosition>
+                <report
+        >Pienissimo_Dashboard_Reports/Scadenze_da_Incassare_30_Giorni</report>
+                <showPercentage>false</showPercentage>
+                <showValues>true</showValues>
+                <sortBy>RowLabelAscending</sortBy>
+                <sortLegendValues>false</sortLegendValues>
+                <title>Rate non pagate - prossimi 30 giorni</title>
+                <useReportChart>false</useReportChart>
+            </dashboardComponent>
+            <rowIndex>0</rowIndex>
+            <rowSpan>6</rowSpan>
+        </dashboardGridComponents>
+        <numberOfColumns>12</numberOfColumns>
+        <rowHeight>60</rowHeight>
+    </dashboardGridLayout>
+    <dashboardType>SpecifiedUser</dashboardType>
+    <description
+  >Fatture per stato di pagamento e importi delle rate non pagate in scadenza nei prossimi 30 giorni, raggruppati per settimana.</description>
+    <isGridLayout>true</isGridLayout>
+    <owner>a.mrruku@pienissimo.uat</owner>
+    <runningUser>a.mrruku@pienissimo.uat</runningUser>
+    <textColor>#16325C</textColor>
+    <title>Fatture - Incassi e Scadenze</title>
+    <titleColor>#16325C</titleColor>
+    <titleSize>14</titleSize>
+</Dashboard>

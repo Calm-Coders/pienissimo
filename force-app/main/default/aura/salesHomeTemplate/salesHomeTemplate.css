@@ -31,6 +31,10 @@
   align-items: stretch;
 }
 
+.THIS .work-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
 .THIS .home-card {
   min-width: 0;
   overflow: hidden;
@@ -72,7 +76,26 @@
   margin: 1.25rem 0;
 }
 
+.THIS .dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 1.25rem;
+}
+
+.THIS .dashboard-region {
+  min-width: 0;
+}
+
+.THIS .dashboard-region:not(:empty) {
+  margin-bottom: 1.25rem;
+}
+
 @media (max-width: 64rem) {
+  .THIS .dashboard-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .THIS .overview-grid,
   .THIS .work-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

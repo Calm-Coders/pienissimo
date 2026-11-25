@@ -21,6 +21,31 @@
       defaultWidth="Xlarge"
     />
         <flexipage:region
+      name="dashboardSummary"
+      label="Dashboard"
+      defaultWidth="Large"
+    />
+        <flexipage:region
+      name="opportunityDashboard"
+      label="Pipeline opportunita"
+      defaultWidth="Large"
+    />
+        <flexipage:region
+      name="orderDashboard"
+      label="Valori ordini per mese"
+      defaultWidth="Xlarge"
+    />
+        <flexipage:region
+      name="trancheDashboard"
+      label="Tranche in scadenza"
+      defaultWidth="Xlarge"
+    />
+        <flexipage:region
+      name="invoiceDashboard"
+      label="Fatture - incassi e insoluti"
+      defaultWidth="Xlarge"
+    />
+        <flexipage:region
       name="left"
       label="Attività di oggi"
       defaultWidth="Medium"

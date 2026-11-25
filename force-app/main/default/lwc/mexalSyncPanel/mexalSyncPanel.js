@@ -79,10 +79,6 @@ export default class MexalSyncPanel extends LightningElement {
     }));
   }
 
-  get refreshDisabled() {
-    return this.loading || this.starting;
-  }
-
   connectedCallback() {
     this.connected = true;
     this.refreshStatus();
