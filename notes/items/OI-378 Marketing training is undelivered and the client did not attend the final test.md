@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Elena Spini, Matteo D, Rebecca M, Fabrizio Paganelli
 org: both
 raised: 2026-11-19
-updated: 2026-11-25
+updated: 2026-11-26
 depends_on: [OI-375, OI-246]
 blocks: []
 severity: high
@@ -262,3 +262,26 @@ and [OI-340](OI-340%20The%20website%20lead%20forms%20have%20no%20field%20for%20t
 this thread: **Daniela Morgese** (`daniela@pienissimo.com`) and **Matteo
 Distaso** (`matteo.d@pienissimo.com`). 🔴 **Rebecca's surname is not** — her
 directory entry reads only _"rebecca m"_.
+
+## 2026-11-26 - the deck contradicts the calendar sent the night before
+
+🆕 **The training appears as item `02` of the residual-Fase-1 slide** added to the
+Fase 2 offer deck on **26/11 11:43:11Z**: _"Formazione marketing: settimana
+prossima"_, with four sub-lines — _"Test finale del flusso marketing: **data da
+concordare**"_, _"Tema dominio per landing page"_, _"Formazione creazione segmenti
+e invio newsletter"_, _"Formazione form e landing page"_
+([OI-386](OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md)).
+
+⚠ **_"Data da concordare"_ contradicts ROMI's own mail of the previous evening**,
+which fixed the final marketing check for **1 December 10:00-11:00**. The deck was
+edited **after** that mail went out, so the two ROMI documents disagree about
+whether the final test has a date. 🟢 The two training modules in the slide match
+the 3/12 and 4/12 sessions.
+
+🔴 **Nothing else moved.** The client has **not replied** to the fixed calendar —
+no `@pienissimo.com` mail in the window at all — so **30/11, 1/12, 3/12 and 4/12
+are unconfirmed by the client**. 🔴 Still missing: Fabrizio Mastracci's scaletta
+(a **ninth** window), the 19/11 test pack, the no-show explanation, the training
+record, **and an owner for the client-side test campaign the 1/12 session needs**.
+🔴 **No build representative is named for 1 December**, which runs in production
+([OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md)).

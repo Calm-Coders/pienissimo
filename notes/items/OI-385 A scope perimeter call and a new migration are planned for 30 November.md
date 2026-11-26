@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci, Aurel Mrruku, Sabatino Rinaldi, Fabrizio Paganelli
 org: both
 raised: 2026-11-25
-updated: 2026-11-25
+updated: 2026-11-26
 depends_on: [OI-375, OI-376, OI-380]
 blocks: [fase-1-closure]
 severity: high
@@ -110,3 +110,38 @@ run in production**.
 - **Confirmation that client contact on these subjects is authorised**, by name,
   by Angelo Pastorelli or Gianpaolo Motta.
 - **The client-side test campaign** for 1 December, with an owner.
+
+## 2026-11-26 - the absence is acknowledged, and the perimeter is already drafted
+
+🔑 **The perimeter now exists in writing, and it omits the client's two
+demands.** Elena Spini edited the Fase 2 offer deck at **11:43:11Z** on 26/11,
+adding a `CRONOPROGRAMMA` slide titled _"Cronoprogramma attivita residue"_ that
+lists three open Fase 1 activities — reports and dashboards, marketing training,
+WhatsApp — and **not the scadenziario or the credit notes**. Full detail in
+[OI-386](OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md).
+⚠ **Nothing states that this slide is what will be presented on 30 November**;
+the reading rests on its title and its timing.
+
+🔴 **The coverage gap is acknowledged and still unfilled.** Elena Spini replied to
+Aurel Mrruku's _"io non ci sono il 30 e l 1"_ in thread on **26/11 09:08:53 CET**:
+
+> _"**vero me l'avevi pure detto ma non l ho segnato e speravo di ricordarmi
+> male**"_ 😅
+
+So the absence was known to her before, was not recorded, and as of 26 November
+**no substitute is named for either session** — including the 1 December final
+marketing check, which runs in production.
+
+🔴 **The pre-call check she wanted did not produce a record.** She booked
+`PIENISSIMO - Rapido Allineamento` for 26/11 11:30-12:00 expressly to prepare
+this meeting — _"mi serve un giusto un check pre call con i pazzi per lunedi"_,
+_"tanto piu se tu non ci sarai"_ (12:02 CET) — and the Google Meet transcript
+holds **no project content at all**; the substance moved to a **Slack huddle at
+12:02:47 CET** that leaves no transcript. See
+[the meeting note](../meetings/2026-11-26%20Rapido%20Allineamento.md).
+
+🔴 **Four days to go and nothing else moved.** No source in the 25/11 → 26/11
+window mentions _"la nuova migrazione"_ again — 0 Slack hits on `migrazione` and
+`perimetro`, 0 Drive documents, 0 Fathom, and no client mail. **The migration is
+still undefined, unestimated and unruled Fase 1 or Fase 2**, and the client has
+not acknowledged the calendar.

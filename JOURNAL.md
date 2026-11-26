@@ -10,6 +10,51 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-26 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail (4 queries), Slack (4 conversations + 2 threads + 6
+  searches + the canvas), Drive (2 searches + 3 file reads + 2 folder checks),
+  Fathom, git and GitHub from watermark **2026-11-25T22:00Z**, **one day**.
+  Opened **OI-386**; wrote
+  [the 26/11 meeting note](notes/meetings/2026-11-26%20Rapido%20Allineamento.md);
+  updated **OI-376**, **OI-377**, **OI-378**, **OI-380**, **OI-382**, **OI-385**
+  and [the Fase 2 offer](notes/The%20Fase%202%20offer.md); MAP, INDEX (6 rows
+  amended + 1 item row + 1 meeting row + 1 trace row, 652 -> 655), both trackers
+  (6 regenerated rows + 1 new row each), a dated update section in both recaps,
+  [the trace](notes/traces/Source%20trace%202026-11-26%20nightly.md).
+- **State:** 🔑 **The perimeter the 30 November call exists to establish has
+  already been written, and it omits the two things the client asked for.** Elena
+  Spini edited `Pienissimo_Offerta_Fase_2_V_4.1.pptx` at **11:43:11Z** — its only
+  recorded revision since 20/11 — adding a `CRONOPROGRAMMA` slide, _"le attivita
+  ancora aperte per la fase 1"_, with **three** items: report & dashboard,
+  formazione marketing, configurazione WhatsApp. 🔴 **The scadenziario and the
+  note di credito are absent**, while **the same deck still prices them as `R1`
+  14/12/2026 and `R6` 12/04/2027** — R6 justified as _"collocata ad aprile in
+  accordo con voi"_, **an agreement nothing records** and one the client's 20/11
+  demand contradicts (**OI-386**, OI-380 **sixth day**). 🔑 **V.4.1 was read at
+  last**, closing a standing unknown: seven releases and `150 giornate`
+  unchanged, now with per-release pricing, a separate maintenance line and a
+  revised total — **no figure transcribed**. 🔴 **The pre-call check produced no
+  record**: `PIENISSIMO - Rapido Allineamento`, 26/11 11:30-12:00, transcript
+  **1,024 bytes with no project content**, the two missed each other by fifteen
+  minutes, substance moved to a **Slack huddle at 12:02:47 CET**. 🔴 **Aurel
+  Mrruku's 30/11 and 1/12 absence is acknowledged and unfilled** — Elena Spini,
+  09:08:53, _"vero me l'avevi pure detto ma non l ho segnato"_ — and 1/12 runs in
+  production. 🔴 **Zero client mail**, so the 30/11-4/12 calendar is unconfirmed;
+  PEC still absent (sixth day); Fathom 0 (45th run); 0 commits, 0 open PRs.
+- **Next:** before Monday 10:00 — get a written ruling on whether the
+  scadenziario and the credit notes are Fase 1, name a build representative for
+  30/11 and 1/12, and establish whether that slide is what gets presented and
+  whether the deck goes to the client in this state.
+- **Watch:** ⚠ the deck's own rows are already stale — _"In produzione lunedi"_
+  against a Wednesday 25/11 release, _"data da concordare"_ against the 1/12
+  fixed by mail the previous evening. ⚠ The deck edit falling inside the booked
+  slot is **timing only**; no source states the two are connected. ⚠ `MAP.md`'s
+  first 130 lines are ~104 KB — read a byte slice, not a line count. 🔴 The Fase 2
+  deck was worked on while the freeze (OI-376) has never been formally lifted.
+
+---
+
 ## 2026-11-25 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail (9 queries - 🟢 **the connector came back after four blind

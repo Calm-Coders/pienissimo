@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Aurel Mrruku, Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-19
-updated: 2026-11-25
+updated: 2026-11-26
 depends_on: [OI-375]
 blocks: []
 severity: gating
@@ -196,3 +196,23 @@ stakeholder, **senza pero fornire spiegazioni agli utenti**"_ — which corrobor
 the instruction already held, verbatim, from an independent source. ⚠ It also
 confirms that an **unexplained** release was the plan of record from 20 November
 onward, and the release of 25/11 was in fact unaccompanied.
+
+## 2026-11-26 - now named in a client-facing commercial document, with a wrong date
+
+🆕 **The reporting work appears in a client-facing document for the first time**,
+as item `01` of the `CRONOPROGRAMMA` slide added to the Fase 2 offer deck on
+**26/11 11:43:11Z**: _"**Report & dashboard — In produzione lunedi**"_
+([OI-386](OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md)).
+
+⚠ **The date is wrong.** The release went to production on **Wednesday 25
+November at 18:19:59 CET**
+([OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md)).
+Either the line predates the release and was not updated when the deck was
+edited, or it means a future Monday. **Not resolvable from the file.**
+
+🔴 **The underlying defects of this item are untouched by that.** Being listed in
+a sales deck is not a requirement: the register is still **v1.6** with no
+reporting requirement, **the contract clause that makes reports and dashboards a
+deliverable is still unquoted — an eighth day**, there is still no acceptance
+test, no visibility decision, and **the tranche report schedule is still
+unscheduled with four days to month end**.

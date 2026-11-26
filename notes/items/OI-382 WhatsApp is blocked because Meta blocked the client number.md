@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Elena Spini, Fabrizio Paganelli
 org: Pienissimo
 raised: 2026-11-20
-updated: 2026-11-20
+updated: 2026-11-26
 depends_on: []
 blocks: [fase-1-closure]
 severity: high
@@ -72,3 +72,23 @@ of the event communication, it will not.
   any part in the remedy or merely records the blocker.
 - **Whether WhatsApp is contractually Fase 1 at all** — it is asserted as a
   closure item in a status post and nowhere else.
+
+## 2026-11-26 - ROMI puts the responsibility in writing
+
+🆕 **The block is now stated as a Fase 1 residual activity in a client-facing
+document**, item `03` of the `CRONOPROGRAMMA` slide added to the Fase 2 offer deck
+on **26/11 11:43:11Z**
+([OI-386](OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md)):
+
+> _"**Configurazione WhatsApp** — Non dipende da ROMI: realizzabile non appena si
+> sblocca il numero. **Lo sblocco e in carico a Pienissimo**"_
+
+🔑 **This is the first written allocation of the remedy.** Until now the block was
+asserted in an internal status post only; the deck assigns the unblocking to the
+client and disclaims ROMI dependency. ⚠ **It is ROMI's own assertion in its own
+sales document, not an agreed position** — nothing records the client accepting
+it, and the deck may not have been sent.
+
+🔴 **The underlying facts are still unknown**: the number, the block date, Meta's
+stated reason, who at Pienissimo is handling it, and whether WhatsApp is
+contractually Fase 1 at all.

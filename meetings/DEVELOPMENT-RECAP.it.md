@@ -10691,3 +10691,53 @@ PR #132 integrata in DevMain al commit `56a7020`, verificato localmente il 25 no
 ## Aggiornamento 25/11/2026 - rilascio report completato con utente di esecuzione fisso
 
 L'utente ha richiesto che tutte e cinque le nuove dashboard siano eseguite come Amministrazione Pienissimo, sostituendo la precedente indicazione di mantenere le tre dashboard dinamiche di UAT. Account attivo verificato in produzione. Validazione `0AfSW000001NQMD0A4` riuscita su tutti i 26 componenti; deployment effettivo `0AfSW000001NQPR0A4` riuscito il 25/11/2026 alle 17:19:59Z (18:19:59 Europe/Tirane). Rilasciati cinque dashboard, dieci report (nove del branch più la dipendenza Lead mancante), tre tipi di report, quattro cartelle, Home/template, navigazione dell'app Sales e accesso report per gli agenti. Verificati tramite nuova estrazione da produzione l'utente di esecuzione di tutte le dashboard, i dieci report, i tre tipi di report, l'assegnazione Home agli agenti, le schede Report/Dashboard e il permesso RunReports. Tutti i dieci report sono stati eseguiti correttamente via Analytics REST API con allData=true. Le quattro dashboard dinamiche preesistenti non sono state modificate. Le dashboard mostreranno i dati secondo l'accesso dell'account amministrativo indicato, come richiesto. Le condivisioni UAT sono state mappate su account attivi di produzione; due destinatari senza corrispondenza non hanno ricevuto accessi sostitutivi. I tre report a ciambella esistenti erano identici e non sono stati rilasciati di nuovo. Il filtro Lead ridondante su tutti i tipi di record è stato normalizzato mantenendo anche i sette Lead senza tipo di record. Dipendenze mancanti e utenti di esecuzione sono aggiornati localmente nei sorgenti; nessun commit o push. Collaudo con il cliente e invio schedulato del report tranche restano da eseguire: il rilascio tecnico è completo, ma il punto rimane in corso.
+## Aggiornamento 26/11/2026 - il perimetro residuo della Fase 1 e redatto dentro l'offerta di Fase 2 contestata
+
+`requirements-check` notturno, watermark **2026-11-25T22:00Z**, un giorno. Nessuna
+modifica al codice, nessun commit nella finestra e nessuna pull request aperta:
+questa voce registra una modifica documentale e due lacune di processo.
+
+**L'elenco di quanto resta aperto sulla Fase 1 ora esiste per iscritto.** Elena
+Spini ha modificato `Pienissimo_Offerta_Fase_2_V_4.1.pptx` il **26/11/2026 alle
+11:43:11Z** — unica revisione registrata dalla creazione del 20 novembre —
+aggiungendo una slide `CRONOPROGRAMMA` intitolata *"Cronoprogramma attivita
+residue · Le attivita ancora aperte per la fase 1 e i tempi previsti per
+completarle"*. Contiene tre voci: report e dashboard (*"In produzione lunedi"*),
+formazione marketing (*"settimana prossima"*, con il test finale marketing a
+*"data da concordare"*) e configurazione WhatsApp (*"Non dipende da ROMI … Lo
+sblocco e in carico a Pienissimo"*).
+
+**Lo scadenziario e le note di credito non compaiono in quell'elenco**, pur
+essendo stati chiesti entrambi *ASAP* dalla direzione del cliente il 20 novembre, e
+lo stesso deck continua a quotarli come Fase 2 — `R1 · Scadenziario` al 14 dicembre
+2026 e `R6 · Note di credito` al 12 aprile 2027, quest'ultima descritta come
+*"collocata ad aprile in accordo con voi"*, un accordo che nessuna fonte documenta.
+Assenti inoltre: le sedici modifiche al flusso Sales, *"la nuova migrazione"* che
+ROMI stessa ha messo sul calendario del cliente per il 30 novembre, la
+configurazione DocuSign del PDF d'ordine, le date di fine evento retrodatate in
+produzione, i prodotti inattivi che fanno fallire il match dei codici WooCommerce e
+i referenti importati come lead marketing. Un elenco di chiusura della Fase 1
+collocato dentro l'offerta di Fase 2 che la PEC del 17 novembre contesta
+integralmente induce il cliente a leggere le due cose come un unico pacchetto. Si
+veda il punto #386.
+
+**V.4.1 e stata letta per la prima volta**, risolvendo un'incognita pendente. I
+sette rilasci, le `150 giornate` e il completamento al 12 aprile 2027 sono
+invariati rispetto alla V.4, e restano le dieci giornate di maintenance da R0 a R6;
+sono nuovi la slide sul residuo, il dettaglio prezzi per rilascio, una voce di
+maintenance quotata a parte e un totale rivisto. Nessun importo e riportato, per la
+regola vigente.
+
+**Il check preparatorio per il 30 novembre non ha prodotto alcun verbale.**
+`PIENISSIMO - Rapido Allineamento` era fissato il 26/11 dalle 11:30 alle 12:00 CET
+proprio per preparare quell'incontro. I due partecipanti si sono mancati di circa
+quindici minuti, la trascrizione del Google Meet non contiene alcun contenuto di
+progetto e la sostanza e passata a un huddle Slack alle 12:02:47 CET che non lascia
+trascrizione. L'assenza di Aurel Mrruku il 30 novembre e l'1 dicembre e stata
+riconosciuta la mattina stessa e non e stato indicato alcun sostituto; la sessione
+dell'1 dicembre si svolge in produzione.
+
+**Il cliente non ha inviato nulla.** Nella finestra non esiste alcuna mail
+`@pienissimo.com`, quindi il calendario 30/11-4/12 non e confermato dal cliente. La
+PEC resta assente dalla casella per il sesto giorno e il termine ex art. 1454 c.c.
+e ancora ignoto.

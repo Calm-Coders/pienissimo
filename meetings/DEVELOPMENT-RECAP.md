@@ -10301,3 +10301,48 @@ PR #132 is merged into DevMain at `56a7020` (verified locally on 25 November). T
 ## Update 2026-11-25 - reporting release completed with the requested fixed running user
 
 The user explicitly changed the running-user decision: all five new dashboards must run as Amministrazione Pienissimo, rather than preserving the three viewer-based dashboards from UAT. The active production account was verified. Check-only validation `0AfSW000001NQMD0A4` succeeded for all 26 components; actual production deployment `0AfSW000001NQPR0A4` succeeded on 25 November 2026 at 17:19:59Z (18:19:59 Europe/Tirane). Deployed: five dashboards, ten reports (the nine branch reports plus the missing Lead dependency), three custom report types, four folders, the Home page/template, Sales app reporting navigation and agent reporting access. Production was retrieved again: all five dashboards are SpecifiedUser with the selected running user; all ten reports and three report types are present; the agent Home assignment, Reports/Dashboards navigation and RunReports permission are verified. All ten reports executed successfully through the Analytics REST API with allData=true. The four pre-existing dynamic dashboards were not changed. Source now includes the five running-user changes and the missing Lead report, commercial report folder and two report types. These source changes are local and uncommitted. The deployment preserves existing production application/permission settings and excludes unrelated Plus-profile assignments and Mexal LWC changes. Folder access follows the UAT shares mapped to verified active production users; two UAT recipients have no active production match and receive no substitute grant. Fixed-user dashboards display data using the selected administrator account access, as requested. The redundant all-record-types Lead filter was omitted in the deployable dependency, preserving the seven production Leads without a record type. The three existing Home donut reports were already identical and were not redeployed. No client acceptance session or scheduled tranche report subscription was performed; those remain outstanding, so this item remains in progress despite the completed technical release. Evidence is in the ignored local `.org-status-cache/report-release-2026-11-25/` directory, including completed-deployment.json and post-deploy-checks.json. No commit or push was made.
+## Update 2026-11-26 - the residual Fase 1 perimeter is drafted inside the contested Fase 2 offer
+
+Nightly `requirements-check`, watermark **2026-11-25T22:00Z**, one day. No code
+changed, no commit existed in the window and no pull request is open; this entry
+records a documentary change and two process gaps.
+
+**The list of what remains open on Fase 1 now exists in writing.** Elena Spini
+edited `Pienissimo_Offerta_Fase_2_V_4.1.pptx` at **2026-11-26 11:43:11Z** — its
+only recorded revision since creation on 20 November — adding a `CRONOPROGRAMMA`
+slide titled *"Cronoprogramma attivita residue · Le attivita ancora aperte per la
+fase 1 e i tempi previsti per completarle"*. It carries three items: report and
+dashboard (*"In produzione lunedi"*), formazione marketing (*"settimana
+prossima"*, with the final marketing test at *"data da concordare"*), and
+configurazione WhatsApp (*"Non dipende da ROMI … Lo sblocco e in carico a
+Pienissimo"*).
+
+**The scadenziario and the note di credito are not on that list**, although the
+client's direction demanded both *ASAP* on 20 November, and the same deck still
+prices them as Fase 2 — `R1 · Scadenziario` at 14 December 2026 and `R6 · Note di
+credito` at 12 April 2027, the latter described as *"collocata ad aprile in
+accordo con voi"*, an agreement no source records. Also absent: the sixteen Sales
+flow changes, the *"nuova migrazione"* ROMI itself put on the client's calendar
+for 30 November, the order-PDF DocuSign configuration, the backdated production
+event end dates, the inactive products failing the WooCommerce code match, and the
+referenti imported as marketing leads. A Fase 1 closure list placed inside the
+Fase 2 offer the PEC of 17 November contests in its entirety invites the client to
+read the two as one package. See item #386.
+
+**V.4.1 was read for the first time**, resolving a standing unknown. Seven
+releases, `150 giornate` and completion on 12 April 2027 are unchanged from V.4,
+and the ten maintenance days R0-R6 stand; what is new is the residual slide, a
+per-release price breakdown, a separately priced maintenance line and a revised
+total investment. No figures are transcribed, per the standing rule.
+
+**The pre-call check for 30 November produced no record.** `PIENISSIMO - Rapido
+Allineamento` was booked for 26/11 11:30-12:00 CET expressly to prepare that
+meeting. The two participants missed each other by about fifteen minutes, the
+Google Meet transcript contains no project content at all, and the substance moved
+to a Slack huddle at 12:02:47 CET that leaves no transcript. Aurel Mrruku's
+absence on 30 November and 1 December was acknowledged the same morning and no
+substitute has been named; the 1 December session runs in production.
+
+**The client sent nothing.** No `@pienissimo.com` mail exists in the window, so
+the 30/11-4/12 calendar is unconfirmed by the client. The PEC remains absent from
+the mailbox for a sixth day and the art. 1454 c.c. term is still unknown.

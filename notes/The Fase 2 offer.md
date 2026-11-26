@@ -6,7 +6,7 @@ owner: Andrea Galotto
 with: Elena Spini
 org: ROMI
 raised: 2026-11-02
-updated: 2026-11-20
+updated: 2026-11-26
 depends_on: [OI-308]
 source: Drive 1nE19jesbBpP2JXdnDOZfAnB--fhaEKMCMrgf9RxkWbY and 1b329SMXkcG3kivDfvoziCFuk2I19DlQQqS_UTQtKFeA
 ---
@@ -318,3 +318,66 @@ Fase 2 is stopped.
 roadmap, and **le note di credito** →
 [OI-380](items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
 That is the scope dispute stopping being abstract.
+
+## 🔑 2026-11-26 - V.4.1 read at last, and it now carries the Fase 1 residual list
+
+**The standing "what V.4.1 changes is unknown" is resolved.** The deck was read
+from Drive on 2026-11-26. It had been modified that morning: `list_file_revisions`
+shows **a single recorded revision, by Elena Spini, at 11:43:11Z** — inside the
+11:30-12:00 slot she had booked with Aurel Mrruku to prepare the 30 November
+perimeter call
+([the meeting note](meetings/2026-11-26%20Rapido%20Allineamento.md)).
+
+⚠ The 20/11 modification by Angelo Pastorelli recorded above is not in the
+revision list the connector returns, which holds one entry only. **Both facts are
+kept as reported by their sources.**
+
+### 🟢 Unchanged from V.4
+
+**Seven releases, `150 giornate`, `7 rilasci in produzione`, go-live completo
+`12 aprile 2027`.** R0 contratti da palco (Nov 2026, _"in produzione prima di
+Pienissimo Live (24-26/11)"_), R1 scadenziario **14 dicembre 2026** with the
+reverse gear intact (_"Rata non piu pagata: l'asset torna da Disponibile a
+Ordinato"_), R2 annullamento e cambio nome **14/01/2027**, R3 Info Point
+**15/02/2027**, R4 eventi multi-edizione **08/03/2027**, R5 integrazioni e
+notifiche **22/03/2027**, R6 note di credito **12/04/2027**. The
+`Maintenance di rilascio` slide still reads _"COPERTURA 10 giornate, da R0 a
+R6"_, and the free month of post-go-live support after the last release stands.
+The self-caveat stands too: _"Date indicative, da consolidare nella Business
+Blueprint; l'ordine dei rilasci puo seguire le priorita di Pienissimo."_
+
+### 🆕 What V.4.1 adds
+
+1. 🔑🔴 **A `CRONOPROGRAMMA` slide — _"Cronoprogramma attivita residue · Le
+   attivita ancora aperte per la fase 1 e i tempi previsti per completarle"_.**
+   Three items only: **report & dashboard** (_"In produzione lunedi"_),
+   **formazione marketing** (_"settimana prossima"_, with the final marketing test
+   at _"data da concordare"_, the landing-page domain and the two modules), and
+   **configurazione WhatsApp** (_"Non dipende da ROMI … Lo sblocco e in carico a
+   Pienissimo"_). 🔴 **The scadenziario and the note di credito are absent from it
+   while the same deck prices them as R1 and R6** → **[OI-386](items/OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md)**.
+   ⚠ This is a **Fase 1 closure list placed inside the Fase 2 offer**, the
+   document the PEC of 17 November contests in its entirety.
+2. 🔑 **A per-release price breakdown**, R0 to R6, plus a **separately priced
+   `Maintenance di rilascio` line** and a **revised total investment** — three
+   instalments **40% alla firma / 30% a 60 giorni / 30% alla consegna**, five
+   months from start. **No figure is transcribed here**, per the standing rule.
+   ⚠ So the total recorded for V1 above no longer describes the current offer; the
+   figures stand only as the version they were read from.
+3. 🆕 _"Seguira documento tecnico"_ under the economic offer, and the amounts are
+   stated as _"comprensivi di analisi e Business Blueprint, UAT, bug fixing,
+   deploy per ogni rilascio e formazione"_.
+4. 🆕 The timeline band gains a **`Mag`** column and names the client's events —
+   **Pienissimo Live**, **Academy 19.01.27**, **Camerieri e Venditori** — with the
+   `Maintenance di rilascio` row carried across all seven releases.
+5. 🆕 **R6 carries a rationale for its placement**: _"collocata ad aprile in
+   accordo con voi: i casi sono pochi e non bloccano gli eventi"_. 🔴 **That
+   agreement is asserted and nothing records it** — and on 20 November the client's
+   direction demanded the credit notes **ASAP**
+   ([OI-380](items/OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md)),
+   which directly contradicts _"in accordo con voi"_.
+6. 🆕 R3 adds _"Confronto con Andrea sui dati dell'app"_ on the Info Point data —
+   ⚠ which Andrea is not stated.
+
+🔴 **Still no reconciliation of `150 giornate` against the project plan's
+`58 - 78`**, and the project plan was not re-read in this window.

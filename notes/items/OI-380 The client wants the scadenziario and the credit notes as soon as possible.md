@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Angelo Pastorelli, Gianpaolo Motta, Daniela Morgese, Aurel Mrruku
 org: both
 raised: 2026-11-20
-updated: 2026-11-25
+updated: 2026-11-26
 depends_on: [OI-375, OI-379]
 blocks: [fase-1-closure]
 severity: gating
@@ -207,3 +207,25 @@ watch before Monday 10:00.**
 🟢 **Daniela Morgese's surname is attested at last**, from the mail directory on
 the live client thread (`daniela@pienissimo.com` → "Daniela Morgese"), after four
 days on the unreachable list.
+
+## 🔴 2026-11-26 - a sixth day, and the omission is now documentary
+
+**The thing this note said to watch before Monday has happened, in writing.**
+
+🔑 **ROMI has drafted the list of what remains open on Fase 1, and neither the
+scadenziario nor the credit notes is on it.** The `CRONOPROGRAMMA` slide added to
+the Fase 2 offer deck on **26/11 at 11:43:11Z** lists exactly three residual Fase
+1 activities — reports and dashboards, marketing training, WhatsApp configuration.
+🔑 **And the same deck still sells both of these as Fase 2**: `R1 · Scadenziario`
+at **14 dicembre 2026** and `R6 · Note di credito` at **12 aprile 2027**. Detail
+in [OI-386](OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md).
+
+⚠ So the warning recorded above — _"if they are not raised in it they may be
+excluded by it"_ — is no longer a forecast about a meeting; **it is the state of
+the only written perimeter that exists.** The classification the client disputes
+is being answered by omission, four days before the call.
+
+🔴 **A sixth day of silence otherwise.** Verified negative across all four
+sources: 0 Slack hits on `scadenziario`, no Pienissimo Drive activity, Fathom 0,
+and a working Gmail with **no client mail at all** in the window. Still no
+estimate, no owner, no Fase 1 / Fase 2 ruling and no start.

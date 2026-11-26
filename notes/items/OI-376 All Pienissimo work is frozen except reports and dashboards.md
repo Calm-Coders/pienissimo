@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Anita Aga
 org: ROMI
 raised: 2026-11-19
-updated: 2026-11-25
+updated: 2026-11-26
 depends_on: [OI-375]
 blocks: [fase-2]
 severity: gating
@@ -211,3 +211,20 @@ is still stopped — while a migration is being promised to the client in writin
 and [OI-344](OI-344%20The%20client%20sent%20sixteen%20Sales%20flow%20changes%20and%20none%20is%20triaged.md)'s
 four `IN LAVORAZIONE` rows and the 13/11 workbook for a **seventh** window — both
 of which the 30 November perimeter call would have to settle.
+
+## 2026-11-26 - the freeze is being planned around in writing
+
+🔴 **A second piece of unauthorised forward work.** The freeze has still **never
+been formally lifted** — the 24/11 exception covered reports, dashboards and the
+training proposals only — and on 26 November the **Fase 2 commercial offer was
+edited** for the first time since 20 November, acquiring a residual-Fase-1
+perimeter slide
+([OI-386](OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md)).
+
+⚠ So in two days ROMI has, without any recorded authorisation beyond the training
+mail: promised the client **a new migration**
+([OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md)),
+booked a perimeter call, and **worked on the Fase 2 deck the client's PEC
+contests in full**. 🔴 **The stop order of 19/11 and the actual conduct of the
+project have now diverged in the record** — nothing has reversed the freeze, and
+nothing is observing it.
