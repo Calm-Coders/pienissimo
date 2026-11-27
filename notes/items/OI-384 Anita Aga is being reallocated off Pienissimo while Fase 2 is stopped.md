@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Anita Aga, Davide Losco
 org: ROMI
 raised: 2026-11-24
-updated: 2026-11-25
+updated: 2026-11-27
 depends_on: [OI-376]
 blocks: [fase-2]
 severity: high
@@ -111,3 +111,44 @@ results**. So:
 ⚠ **The follow-ups the release left open are hers in practice** — the tranche
 report schedule, due before month end, and whatever the client acceptance test
 turns into.
+
+## 🔑 2026-11-27 - the move has a date: she starts on the other project on 1 December
+
+🔑 **The start date this note has asked for twice now exists, and it was agreed in
+the same one-to-one channel as the offer.** Davide Losco to Aurel Mrruku, direct
+message `D0CEWML860G`:
+
+| Time CET | Who | Said |
+| --- | --- | --- |
+| **15:58:57** | Davide Losco | _"Ciao **Abilito Anita a VFL1 su clockify** ok?"_ |
+| **16:38:26** | Aurel Mrruku | 🔑 _"ciao **ok** , fino il 30 non mette niente"_ |
+| **16:38:35** | Aurel Mrruku | 🔑 _"**poi dal 1 inizia lei**"_ |
+
+So: **time booking on the receiving project is enabled, Aurel Mrruku approved it,
+and Anita Aga starts there on 1 December**, with nothing booked until 30 November.
+⚠ The receiving project is named in the messages as `VFL1`; it is another ROMI
+client and nothing further about it belongs in this record.
+
+🔴 **The two gaps that remain are the ones that matter:**
+
+- 🔴 **Still not agreed with her in any source.** She does not appear in the
+  exchange, and no message from her is on the record.
+- 🔴 **Still not approved above Aurel Mrruku.** Fase 2's fate is Angelo
+  Pastorelli's and Gianpaolo Motta's to rule on; neither appears, and neither has
+  ruled.
+- ⚠ **The share of her time is still unstated** - _"dal 1 inizia lei"_ says when,
+  not how much.
+
+🔴 **The premise was contradicted the same afternoon.** Three hours after this
+exchange, ROMI published a weekly status planning **a new migration and a new
+start date** for Pienissimo at the client's own request
+([OI-387](OI-387%20The%20client%20is%20not%20using%20Salesforce%20and%20has%20asked%20for%20a%20new%20import%20and%20a%20new%20start%20date.md)),
+and left both the project close date and the days-to-finish _"da definire dopo la
+call del 30/11"_. The staffing decision rests on _"se non parte pienissimo fase 2
+e libera"_; **the project it frees her from has just acquired unscoped work.**
+
+⚠ **1 December is also the day the final marketing check runs in production**, and
+the day Aurel Mrruku has twice said he is absent
+([OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md),
+[OI-378](OI-378%20Marketing%20training%20is%20undelivered%20and%20the%20client%20did%20not%20attend%20the%20final%20test.md)).
+**From 1 December this project has neither of them.**

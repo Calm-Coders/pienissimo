@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Angelo Pastorelli, Gianpaolo Motta, Daniela Morgese, Aurel Mrruku
 org: both
 raised: 2026-11-20
-updated: 2026-11-26
+updated: 2026-11-27
 depends_on: [OI-375, OI-379]
 blocks: [fase-1-closure]
 severity: gating
@@ -229,3 +229,38 @@ is being answered by omission, four days before the call.
 sources: 0 Slack hits on `scadenziario`, no Pienissimo Drive activity, Fathom 0,
 and a working Gmail with **no client mail at all** in the window. Still no
 estimate, no owner, no Fase 1 / Fase 2 ruling and no start.
+
+## 🔑 2026-11-27 - ROMI's own status puts these two inside the residual perimeter, reversing the deck
+
+🔑 **The perimeter question this note has waited seven days for now has an
+internal answer, and it is the opposite of what the deck says.** Elena Spini,
+`#tproj-pienissimo` **27/11 17:00:00 CET**:
+
+> _"La decisiva e lunedi 30/11: vogliamo capire dal cliente cosa si aspetta per
+> riprendere in mano il progetto e iniziare davvero a usare la piattaforma. **Per
+> noi mancano solo scadenziario e note di credito**, ma ci facciamo dire tutti gli
+> step e tutti gli scenari possibili, cosi da evitare che ci aggiungano altre cose
+> dopo."_
+
+And in the next-step list:
+
+> _"30/11 - Call con il cliente: farci dire tutto quello che manca per ripartire,
+> **oltre a scadenziario e note di credito**, e pianificare la nuova migrazione."_
+
+**The reversal, with both dates:**
+
+| Date | Source | What it says about these two items |
+| --- | --- | --- |
+| **26/11 11:43:11Z** | The `CRONOPROGRAMMA` slide in `Pienissimo_Offerta_Fase_2_V_4.1.pptx` | 🔴 **Absent** from the three residual Fase 1 activities; priced instead as `R1` 14/12/2026 and `R6` 12/04/2027 → [OI-386](OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md) |
+| **27/11 17:00 CET** | ROMI's weekly status on `#tproj-pienissimo` | 🔑 **The only two things left** - _"Per noi mancano solo scadenziario e note di credito"_ |
+
+🔑 **Later evidence wins: ROMI's working position is that these two items are the
+residual Fase 1 scope.** ⚠ **But the deck was not corrected** - no revision on
+26 or 27 November - so the only *written artifact* that states a perimeter still
+omits them, and it is the Fase 2 offer the PEC contests in full.
+
+🔴 **What is still missing is everything that would make this actionable**, an
+eighth day: **no estimate, no owner, no Fase 1 / Fase 2 ruling, no start date**,
+and no word from Angelo Pastorelli or Gianpaolo Motta, whose feedback Elena Spini
+said on 20/11 she was waiting for before she could move. ⚠ And the client has
+still said nothing: **no `@pienissimo.com` mail in the window**, a seventh day.

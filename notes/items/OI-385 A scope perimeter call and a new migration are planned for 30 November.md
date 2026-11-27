@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Fabrizio Mastracci, Aurel Mrruku, Sabatino Rinaldi, Fabrizio Paganelli
 org: both
 raised: 2026-11-25
-updated: 2026-11-26
+updated: 2026-11-27
 depends_on: [OI-375, OI-376, OI-380]
 blocks: [fase-1-closure]
 severity: high
@@ -145,3 +145,55 @@ window mentions _"la nuova migrazione"_ again — 0 Slack hits on `migrazione` a
 `perimetro`, 0 Drive documents, 0 Fathom, and no client mail. **The migration is
 still undefined, unestimated and unruled Fase 1 or Fase 2**, and the client has
 not acknowledged the calendar.
+
+## 🔑 2026-11-27 - the migration has an antecedent at last, and the call now has to settle more than the perimeter
+
+🔑 **"La nuova migrazione" has a stated origin.** ROMI's weekly status, Elena
+Spini, `#tproj-pienissimo` **27/11 17:00:00 CET**:
+
+> _"**Fabrizio P. (25/11) ci chiede una nuova importazione dei dati e una nuova
+> data di avvio su Salesforce**."_
+
+So the migration in the 25/11 calendar mail is a **client request of the same
+day**, from **Fabrizio Paganelli** - the definite article finally has a referent.
+🔴 **The request itself was still not found**: no mail, message, document or
+recording carrying it exists in any source this account can reach, so its wording,
+channel and recipient are unknown. Full fact in
+[OI-387](OI-387%20The%20client%20is%20not%20using%20Salesforce%20and%20has%20asked%20for%20a%20new%20import%20and%20a%20new%20start%20date.md).
+
+🔴 **The scope is still undefined.** Nothing states which data the new import
+moves, whether it replaces or supplements the 13 November load, how records
+already created in Salesforce are reconciled, or whether it is Fase 1 or Fase 2.
+**Three days to go.**
+
+**What the 30 November call is now expected to produce**, per the same post:
+
+> _"30/11 - Call con il cliente: **farci dire tutto quello che manca per
+> ripartire**, oltre a scadenziario e note di credito, **e pianificare la nuova
+> migrazione**."_
+> _"Elena - **dopo il 30/11, fissare con il cliente perimetro e nuova data di
+> avvio**."_
+
+⚠ **That is four outputs in one hour**: the complete list of what the client
+expects, a ruling on the scadenziario and the credit notes, a migration plan, and
+a new start date - and the perimeter and the start date are then to be fixed
+*after* the call, by Elena Spini.
+
+🔑 **The scadenziario and the credit notes are explicitly inside the agenda now** -
+_"oltre a scadenziario e note di credito"_ - and the same post calls them the only
+residual Fase 1 items, which reverses the 26/11 deck slide
+([OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md),
+[OI-386](OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md)).
+
+🔴 **The coverage gap is now worse, not filled - a third day.** No substitute has
+been named for 30 November or 1 December. ⚠ And on the same afternoon Anita Aga
+was confirmed to start on another project **from 1 December**
+([OI-384](OI-384%20Anita%20Aga%20is%20being%20reallocated%20off%20Pienissimo%20while%20Fase%202%20is%20stopped.md)),
+so from that date the project has neither its technical lead nor the developer who
+built its only live work.
+
+🔴 **The project has no forecast.** The same post leaves _"Data chiusura progetto
+stimata"_ and _"Stima giornate a finire"_ both as _"da definire dopo la call del
+30/11"_. 🔴 **And the client has still not acknowledged the calendar** - no
+`@pienissimo.com` mail in the window, a second day on the invitation and a seventh
+with no client mail at all.

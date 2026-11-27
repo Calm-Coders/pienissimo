@@ -6,7 +6,7 @@ owner: Anita Aga
 with: Aurel Mrruku, Elena Spini, Marco Montesi
 org: both
 raised: 2026-11-19
-updated: 2026-11-26
+updated: 2026-11-27
 depends_on: [OI-375]
 blocks: []
 severity: gating
@@ -216,3 +216,31 @@ reporting requirement, **the contract clause that makes reports and dashboards a
 deliverable is still unquoted — an eighth day**, there is still no acceptance
 test, no visibility decision, and **the tranche report schedule is still
 unscheduled with four days to month end**.
+
+## 2026-11-27 - live, credited to direction, and consumed by nobody
+
+🟢 **The release is now stated as authorised in a written status.** Elena Spini's
+weekly post, `#tproj-pienissimo` **27/11 17:00:00 CET**: _"Report e dashboard:
+**in PROD dal 25/11, con l'ok di Angelo**"_. That is the first time the consent is
+attributed to **Angelo Pastorelli** by name in a status document.
+
+🔴 **But the client is not using the platform at all.** The same post states
+_"Pienissimo non la usa ancora"_ and that the client has gone on working in Zoho
+([OI-387](OI-387%20The%20client%20is%20not%20using%20Salesforce%20and%20has%20asked%20for%20a%20new%20import%20and%20a%20new%20start%20date.md)).
+⚠ **So the first PEC ground was answered with five dashboards and nine reports
+that nobody at the client is opening**, and the acceptance test has no taker.
+
+🔴 **Everything this note has asked for is still owed, with the month ending in
+three days:**
+
+- the **contract clause** that makes reports and dashboards a deliverable,
+  quoted - a **ninth** day;
+- the **requirement register entry** - still **v1.6**, untouched;
+- an **acceptance test** and a **visibility decision**;
+- 🔴 **the tranche report schedule, due before month end - three days left**, and
+  the author is being moved to another project from 1 December
+  ([OI-384](OI-384%20Anita%20Aga%20is%20being%20reallocated%20off%20Pienissimo%20while%20Fase%202%20is%20stopped.md)).
+
+⚠ The residual-Fase-1 slide of 26/11 still lists this as item `01` with the wrong
+date, and the 27/11 status does not correct it
+([OI-386](OI-386%20The%20residual%20Fase%201%20list%20omits%20the%20scadenziario%20and%20the%20credit%20notes.md)).

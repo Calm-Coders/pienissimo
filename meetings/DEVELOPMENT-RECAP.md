@@ -10346,3 +10346,54 @@ substitute has been named; the 1 December session runs in production.
 **The client sent nothing.** No `@pienissimo.com` mail exists in the window, so
 the 30/11-4/12 calendar is unconfirmed by the client. The PEC remains absent from
 the mailbox for a sixth day and the art. 1454 c.c. term is still unknown.
+
+## Update 2026-11-27 - the client never started using the platform, and the perimeter reversed itself in a day
+
+**Pienissimo is not using Salesforce.** ROMI's first weekly status on
+`#tproj-pienissimo` since the PEC, posted 27 November at 17:00 CET, says it
+plainly: _"Avvio sulla piattaforma: Pienissimo non la usa ancora."_ The client has
+gone on working in Zoho, and on 25 November Fabrizio Paganelli asked for a fresh
+data import and a new start date on Salesforce. That request is the antecedent the
+phrase _"la nuova migrazione"_ has lacked since it appeared on the client's
+calendar; the request itself was found in no source - not Gmail, Slack, Drive or
+Fathom - so its wording, channel and recipient are unknown, and the import has no
+scope: which objects, whether it replaces or supplements the 13 November load, and
+how records already created in Salesforce are reconciled. This is the first
+explicit statement in the record that the go-live of 16 November did not take, and
+it sits beside ROMI's standing position that everything agreed for Fase 1 has been
+in production since that date. Both can be true at once, and together they are the
+dispute.
+
+**The residual perimeter reversed itself within thirty hours.** The same status
+says _"Per noi mancano solo scadenziario e note di credito"_ and puts both on the
+30 November agenda. Those are precisely the two items the `CRONOPROGRAMMA` slide
+written into the Fase 2 offer the previous morning leaves out, while the slide's
+three items are reported done or scheduled. Later evidence wins, so ROMI's working
+position is that the scadenziario and the credit notes are residual Fase 1 work and
+not Fase 2 - the classification the client has demanded since 20 November. The deck
+was not corrected: it shows no revision on 26 or 27 November after 11:43:11Z, so the
+only written perimeter still omits them and still prices them as R1 and R6, and
+nothing records which of the two versions ROMI will put to the client.
+
+**From 1 December the project loses both the people who have worked on it.** Anita
+Aga's reallocation now has a date: time booking on the receiving project was
+enabled on 27 November and Aurel Mrruku approved it - nothing until 30 November,
+then she starts there on the 1st. It is still not agreed with her in any source,
+still not approved above him, and the share of her time is unstated. The same day
+he confirmed that move, ROMI published a plan containing a new migration and a new
+start date. Aurel Mrruku has twice said he is absent on 30 November and 1 December
+and no substitute has been named, so the perimeter call runs without the build and
+the marketing check of 1 December runs in production without either of them.
+
+**The training sessions have an explanation and new dates.** The 24 and 26 November
+sessions were lost to Pienissimo Live, which is ROMI's account and unconfirmed by
+any client source. Module 1 moves to 3 December and Module 2 to 4 December, with
+1 December the final marketing-flow check in production including reminder timings,
+conditional on the client preparing a test campaign that still has no owner. The
+client has not replied to the calendar: the thread holds one message and is still
+unread, a second day.
+
+**The project has no forecast.** The status leaves both the estimated close date and
+the days to finish as _"da definire dopo la call del 30/11"_. The client sent
+nothing in the window, a seventh day, and the PEC of 17 November remains absent from
+the mailbox with its art. 1454 c.c. term still unknown.

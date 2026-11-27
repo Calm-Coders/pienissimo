@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Anita Aga, Elena Spini, Angelo Pastorelli, Gianpaolo Motta
 org: ROMI
 raised: 2026-11-20
-updated: 2026-11-25
+updated: 2026-11-27
 depends_on: [OI-376, OI-377]
 blocks: [fase-1-closure]
 severity: high
@@ -271,3 +271,22 @@ November ends in ten days.
 - **The schedule on the tranche report**, before month end.
 - 🔴 **A decision on who may see the reports and dashboards**, and whether the
   client tests them before or after they are live — asked on 24/11 and unanswered.
+
+## 2026-11-27 - the consent is attributed in writing, and the follow-ups are still open
+
+🟢 **ROMI's weekly status credits the release to direction.** Elena Spini,
+`#tproj-pienissimo` **27/11 17:00:00 CET**: _"Report e dashboard: **in PROD dal
+25/11, con l'ok di Angelo**"_. This is the first status document to name the
+authorisation as **Angelo Pastorelli's**; until now it rested on his 24/11
+instruction and the 25/11 thread reply.
+
+🔴 **Gianpaolo Motta's position on the release is still unrecorded** at any point.
+
+🔴 **The follow-ups the release left open are unmoved, and the month ends in three
+days:** the **tranche report schedule**, the **visibility decision**, and the
+**client acceptance test** - which now has a further problem: the client is not
+using the platform at all
+([OI-387](OI-387%20The%20client%20is%20not%20using%20Salesforce%20and%20has%20asked%20for%20a%20new%20import%20and%20a%20new%20start%20date.md)),
+so there is nobody to test it. ⚠ **And the developer who built it starts on
+another project on 1 December**
+([OI-384](OI-384%20Anita%20Aga%20is%20being%20reallocated%20off%20Pienissimo%20while%20Fase%202%20is%20stopped.md)).

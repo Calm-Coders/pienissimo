@@ -6,7 +6,7 @@ owner: Aurel Mrruku
 with: Elena Spini, Anita Aga
 org: ROMI
 raised: 2026-11-19
-updated: 2026-11-26
+updated: 2026-11-27
 depends_on: [OI-375]
 blocks: [fase-2]
 severity: gating
@@ -228,3 +228,24 @@ booked a perimeter call, and **worked on the Fase 2 deck the client's PEC
 contests in full**. 🔴 **The stop order of 19/11 and the actual conduct of the
 project have now diverged in the record** — nothing has reversed the freeze, and
 nothing is observing it.
+
+## 2026-11-27 - the freeze is now contradicted by a published forward plan
+
+🔴 **ROMI published a weekly status that plans work the freeze never authorised.**
+Elena Spini, `#tproj-pienissimo`, **27/11 17:00:00 CET** - the first weekly status
+on this channel since the PEC. It sets out four client sessions, a perimeter
+exercise, **a new migration** and a new start date, and it names an owner for
+them. 🔴 **Nothing in the record has lifted the 19/11 _"il resto fermi tutti"_**;
+the freeze has simply stopped describing the project.
+
+🟢 **The one authorised exception is now attributed in writing.** The post records
+_"Report e dashboard: **in PROD dal 25/11, con l'ok di Angelo**"_ - the first time
+the deploy consent of 24-25 November is stated as Angelo Pastorelli's in a status
+document rather than inferred from a chat thread
+([OI-381](OI-381%20The%20report%20and%20dashboard%20remediation%20is%20unmerged%20and%20due%20in%20production%20on%20a%20holiday.md)).
+
+🔴 **And the thing the freeze was protecting has not happened anyway**: the client
+is not using the platform and has asked for a fresh import and a new start date
+([OI-387](OI-387%20The%20client%20is%20not%20using%20Salesforce%20and%20has%20asked%20for%20a%20new%20import%20and%20a%20new%20start%20date.md)).
+⚠ **Still no source authorises the migration**, and no source records the freeze
+being lifted.

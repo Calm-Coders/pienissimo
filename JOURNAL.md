@@ -10,6 +10,42 @@ Keep the twenty most recent entries here; archive older ones to
 
 ---
 
+## 2026-11-27 - claude-opus-5 - nightly requirements-check
+
+- **Did:** swept Gmail (4 queries), Slack (4 conversations + 1 thread + 7
+  searches + the canvas), Drive (2 searches), Fathom, git and GitHub from
+  watermark **2026-11-26T22:00Z**, **one day**. Opened **OI-387**; updated
+  **OI-376**, **OI-377**, **OI-378**, **OI-380**, **OI-381**, **OI-384**,
+  **OI-385** and **OI-386**; MAP, INDEX, both trackers, both recaps, and
+  [the trace](notes/traces/Source%20trace%202026-11-27%20nightly.md).
+- **State:** 🔑 **The client never started using the platform.** ROMI's first
+  weekly status since the PEC (`#tproj-pienissimo`, 27/11 17:00 CET) states
+  _"Pienissimo non la usa ancora"_, reports the client still working in **Zoho**,
+  and records **Fabrizio Paganelli's 25/11 request for a new data import and a new
+  start date** - the antecedent _"la nuova migrazione"_ lacked. 🔴 That request is
+  in **no reachable source** and the import has no scope. 🔑 The same post says
+  _"Per noi mancano solo scadenziario e note di credito"_, **reversing the
+  `CRONOPROGRAMMA` slide its own author wrote 30 hours earlier**; the deck was
+  **not** corrected, so the only written perimeter still omits them. 🔑 **Anita
+  Aga starts on another project on 1 December** (Clockify enabled, Aurel Mrruku's
+  _"poi dal 1 inizia lei"_), so from that date the project has neither her nor its
+  technical lead - and 1/12 is the marketing check **in production**. 🔴 No
+  forecast at all: close date and days-to-finish both _"da definire dopo la call
+  del 30/11"_.
+- **Next:** the 30 November 10:00 call is the hinge. Before it: a written scope
+  for the new import, a decision on **which** perimeter ROMI presents (slide or
+  status post), and **a build representative for 30/11 and 1/12**. After it, Elena
+  Spini owns the perimeter and the new start date.
+- **Watch:** the deck and the status post **disagree in writing** - do not treat
+  the `CRONOPROGRAMMA` slide as ROMI's position; the status post is later and wins
+  (OI-380, OI-386). The register is still **v1.6** and now lacks a requirement for
+  a second migration as well as for the reports. Two training sessions were lost
+  to **Pienissimo Live**, not to the freeze. The PEC and its art. 1454 term are
+  still absent from the mailbox, a seventh day; the client has sent nothing for
+  seven days and has not acknowledged the calendar. **Next free id is 388.**
+
+---
+
 ## 2026-11-26 - claude-opus-5 - nightly requirements-check
 
 - **Did:** swept Gmail (4 queries), Slack (4 conversations + 2 threads + 6

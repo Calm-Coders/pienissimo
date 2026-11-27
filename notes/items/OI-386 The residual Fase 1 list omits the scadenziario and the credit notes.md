@@ -6,7 +6,7 @@ owner: Elena Spini
 with: Aurel Mrruku, Angelo Pastorelli, Fabrizio Paganelli, Sabatino Rinaldi
 org: both
 raised: 2026-11-26
-updated: 2026-11-26
+updated: 2026-11-27
 depends_on: [OI-380, OI-385, OI-375]
 blocks: [fase-1-closure]
 severity: gating
@@ -128,3 +128,43 @@ V.4 — see [the Fase 2 offer](../The%20Fase%202%20offer.md).
   understates what is open.
 - ⚠ **The report row corrected** to the actual release date, and the marketing
   test row to 1 December, before the deck goes anywhere.
+
+## 🔑 2026-11-27 - ROMI's own status contradicts the slide within thirty hours
+
+🔑 **The slide is not ROMI's working position.** Elena Spini - who wrote the
+`CRONOPROGRAMMA` slide on 26/11 at 11:43:11Z - posted ROMI's weekly status on
+`#tproj-pienissimo` at **27/11 17:00:00 CET** saying the opposite:
+
+> _"**Per noi mancano solo scadenziario e note di credito**"_
+
+and putting them on the 30 November agenda explicitly - _"farci dire tutto quello
+che manca per ripartire, **oltre a scadenziario e note di credito**"_.
+
+| | The slide, 26/11 11:43:11Z | The status post, 27/11 17:00 CET |
+| --- | --- | --- |
+| Residual Fase 1 items | Report & dashboard, formazione marketing, configurazione WhatsApp | 🔑 **Scadenziario and note di credito** |
+| The scadenziario / credit notes | 🔴 **Absent**; priced as `R1` and `R6` Fase 2 | 🔑 **The only two things left** |
+| The three slide items | The whole list | Reported as **done or scheduled**: reports live since 25/11, training on 3-4/12, WhatsApp the client's to unblock |
+
+🔑 **Later evidence wins, and it resolves the substantive question in the client's
+favour**: internally ROMI treats the scadenziario and the credit notes as residual
+Fase 1 work, not Fase 2 →
+[OI-380](OI-380%20The%20client%20wants%20the%20scadenziario%20and%20the%20credit%20notes%20as%20soon%20as%20possible.md).
+
+🔴 **The document was not corrected.** `Pienissimo_Offerta_Fase_2_V_4.1.pptx` shows
+**no modification on 26 or 27 November after 11:43:11Z** and no new revision, so:
+
+- the **only written perimeter that exists still omits the two items**, and still
+  prices them as `R1` 14/12/2026 and `R6` 12/04/2027;
+- the **two stale rows are still stale** - _"In produzione lunedi"_ against a
+  Wednesday release, _"data da concordare"_ against the fixed 1/12, which the
+  27/11 post confirms as 1/12 plus 3-4/12;
+- ⚠ **it is still inside the Fase 2 offer the PEC contests in full.**
+
+⚠ **So the question sharpens rather than closes**: the slide and the status post
+disagree, and nothing records which of the two ROMI will put in front of the client
+on 30 November - or whether the deck is sent in this state. 🔴 Also still absent
+from the slide: OI-344's sixteen changes, the new migration (now a client request,
+[OI-387](OI-387%20The%20client%20is%20not%20using%20Salesforce%20and%20has%20asked%20for%20a%20new%20import%20and%20a%20new%20start%20date.md)),
+the order-PDF DocuSign config, the backdated event end dates, the inactive
+WooCommerce products, the referenti leads and the 13/11 workbook.

@@ -10741,3 +10741,56 @@ dell'1 dicembre si svolge in produzione.
 `@pienissimo.com`, quindi il calendario 30/11-4/12 non e confermato dal cliente. La
 PEC resta assente dalla casella per il sesto giorno e il termine ex art. 1454 c.c.
 e ancora ignoto.
+
+## Aggiornamento 27/11/2026 - il cliente non ha mai iniziato a usare la piattaforma, e il perimetro si e ribaltato in un giorno
+
+**Pienissimo non usa Salesforce.** Il primo status settimanale di ROMI su
+`#tproj-pienissimo` dopo la PEC, pubblicato il 27 novembre alle 17:00 CET, lo dice
+senza giri di parole: _"Avvio sulla piattaforma: Pienissimo non la usa ancora."_ Il
+cliente ha continuato a lavorare su Zoho e il 25 novembre Fabrizio Paganelli ha
+chiesto una nuova importazione dei dati e una nuova data di avvio su Salesforce.
+Quella richiesta e l'antecedente che all'espressione _"la nuova migrazione"_ mancava
+da quando e comparsa sul calendario del cliente; la richiesta in se non e stata
+trovata in nessuna fonte - ne Gmail, ne Slack, ne Drive, ne Fathom - quindi testo,
+canale e destinatario sono ignoti, e l'importazione non ha perimetro: quali oggetti,
+se sostituisce o integra il carico del 13 novembre, e come si riconciliano i record
+gia creati in Salesforce. E la prima affermazione esplicita agli atti che il go-live
+del 16 novembre non ha attecchito, e sta accanto alla posizione costante di ROMI
+secondo cui tutto quanto concordato per la Fase 1 e in produzione da quella data.
+Possono essere vere insieme, e insieme sono la controversia.
+
+**Il perimetro residuo si e ribaltato entro trenta ore.** Lo stesso status afferma
+_"Per noi mancano solo scadenziario e note di credito"_ e mette entrambe le voci
+all'ordine del giorno del 30 novembre. Sono esattamente le due voci che la slide
+`CRONOPROGRAMMA`, scritta nell'offerta di Fase 2 la mattina precedente, lascia fuori,
+mentre le tre voci della slide risultano fatte o calendarizzate. Vince l'evidenza
+piu recente: la posizione operativa di ROMI e che scadenziario e note di credito
+siano residuo di Fase 1 e non Fase 2, cioe la qualificazione che il cliente chiede
+dal 20 novembre. Il deck non e stato corretto: non presenta revisioni il 26 o il 27
+novembre dopo le 11:43:11Z, quindi l'unico perimetro scritto le omette ancora e le
+quota ancora come R1 e R6, e nulla registra quale delle due versioni ROMI portera al
+cliente.
+
+**Dall'1 dicembre il progetto perde entrambe le persone che vi hanno lavorato.** La
+riassegnazione di Anita Aga ha ora una data: il 27 novembre e stata abilitata la
+rendicontazione sul progetto ricevente e Aurel Mrruku l'ha approvata - nulla fino al
+30 novembre, poi lei inizia li il giorno 1. Non risulta concordata con lei in nessuna
+fonte, non risulta approvata sopra di lui, e la quota del suo tempo non e dichiarata.
+Lo stesso giorno in cui ha confermato quello spostamento, ROMI ha pubblicato un piano
+che contiene una nuova migrazione e una nuova data di avvio. Aurel Mrruku ha detto due
+volte di essere assente il 30 novembre e l'1 dicembre e non e stato indicato alcun
+sostituto: la call sul perimetro si tiene senza la parte tecnica e il check marketing
+dell'1 dicembre si svolge in produzione senza nessuno dei due.
+
+**Le sessioni di formazione hanno una spiegazione e nuove date.** Le sessioni del 24 e
+26 novembre sono saltate per Pienissimo Live, versione di ROMI non confermata da
+alcuna fonte del cliente. Il Modulo 1 passa al 3 dicembre e il Modulo 2 al 4 dicembre,
+con l'1 dicembre come ultimo check del flusso marketing in produzione, tempi di
+reminder inclusi, subordinato alla preparazione da parte del cliente di una campagna
+di test che non ha ancora un responsabile. Il cliente non ha risposto al calendario:
+il thread contiene un solo messaggio ed e ancora non letto, secondo giorno.
+
+**Il progetto non ha previsioni.** Lo status lascia sia la data di chiusura stimata
+sia le giornate a finire come _"da definire dopo la call del 30/11"_. Il cliente non
+ha inviato nulla nella finestra, settimo giorno, e la PEC del 17 novembre resta
+assente dalla casella con il termine ex art. 1454 c.c. ancora ignoto.

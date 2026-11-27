@@ -6,7 +6,7 @@ owner: Fabrizio Mastracci
 with: Elena Spini, Matteo D, Rebecca M, Fabrizio Paganelli
 org: both
 raised: 2026-11-19
-updated: 2026-11-26
+updated: 2026-11-27
 depends_on: [OI-375, OI-246]
 blocks: []
 severity: high
@@ -284,4 +284,38 @@ are unconfirmed by the client**. 🔴 Still missing: Fabrizio Mastracci's scalet
 (a **ninth** window), the 19/11 test pack, the no-show explanation, the training
 record, **and an owner for the client-side test campaign the 1/12 session needs**.
 🔴 **No build representative is named for 1 December**, which runs in production
+([OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md)).
+
+## 2026-11-27 - why the sessions were lost, and the client still has not replied
+
+🔑 **The reason the 24 and 26 November sessions did not happen is now on the
+record.** Elena Spini's weekly status, `#tproj-pienissimo` **27/11 17:00:00 CET**:
+
+> _"Seguono l'1/12 (ultimo check del flusso marketing con i tempi di reminder) e
+> il 3 e 4/12 (formazione marketing, **le sessioni del 24 e 26/11 sono saltate per
+> Pienissimo Live**)."_
+
+So the two lost sessions were lost to the client's own event, not to the PEC or
+the freeze. ⚠ **This is ROMI's account; no client source confirms it**, and
+nothing records who cancelled them or when.
+
+**The rescheduled plan, as ROMI states it internally:**
+
+| When | What | Owner |
+| --- | --- | --- |
+| **1/12** | Last check of the marketing flow **in production**, including reminder timings. 🔴 _"Il cliente deve prima preparare una campagna di test"_ | 🔴 **Unnamed client-side; Aurel Mrruku is absent** |
+| **3/12** | Formazione Marketing Modulo 1 - segments and newsletters | Fabrizio Mastracci |
+| **4/12** | Formazione Marketing Modulo 2 - forms and landing pages | Fabrizio Mastracci |
+
+🔴 **The client has still not replied to the calendar.** The mail thread that
+carries it (`1a213f12a0542f0a`, sent 25/11 19:21 CET) still holds **one message**
+and is **still unread** in this mailbox - **a second day**. So all four sessions,
+including the production check on 1 December, remain unconfirmed client-side.
+
+🔴 **Still owed and unmoved:** the contractual provision behind the 20-hour
+figure - a **ninth** day; Fabrizio Mastracci's scaletta for the two modules; ROMI's
+training record; whether the 19/11 test pack was ever sent; **an owner for the
+client-side test campaign the 1/12 check depends on**; and **a build
+representative for 1 December**, which runs in production and which Aurel Mrruku
+has said twice he will miss
 ([OI-385](OI-385%20A%20scope%20perimeter%20call%20and%20a%20new%20migration%20are%20planned%20for%2030%20November.md)).
